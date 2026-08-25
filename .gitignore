@@ -1,2 +1,4 @@
 .deslop/
 .too_many_cooks/
+.playwright-mcp/
+/*.png
