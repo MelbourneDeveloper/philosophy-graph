@@ -498,5 +498,355 @@
   "text": "Herbert Marcuse (1898–1979) was one of the most prominent members of the Frankfurt School or The Institute for Social Research (Institute für Sozialforschung) in Frankfurt am Main. The Frankfurt School was formed in 1922 but went into exile in the United States in the early 1930s during the reign of the Third Reich.",
   "title": "Herbert Marcuse",
   "authors": "Arnold Farr"
+ },
+ "marx": {
+  "text": "Karl Marx (1818–1883) is often treated as an activist rather than a philosopher, a revolutionary whose works inspired the foundation of communist regimes in the twentieth century. However—without denying that considerable, if complex, historical impact—Marx was trained academically as a philosopher (with a doctorate in ancient philosophy); he engaged directly with philosophical contemporaries and predecessors…",
+  "title": "Karl Marx",
+  "authors": "Jonathan Wolff"
+ },
+ "max-stirner": {
+  "text": "Max Stirner (1806–1856) is the author of Der Einzige und sein Eigenthum (1844). This book is usually known as The Ego and Its Own in English, but a more literal, and informative, translation would be The Unique Individual and their Property . Both the form and content of Stirner’s major work are disconcerting.",
+  "title": "Max Stirner",
+  "authors": "David Leopold"
+ },
+ "meister-eckhart": {
+  "text": "Although rather unlikely to make many philosophers’ “top-five” list of medieval Christian thinkers (and even less likely to be found on a history of philosophy syllabus), few medieval thinkers are as wildly popular today in non-academic circles (and even more widely quoted out of context—both in his day and in ours) than Meister Eckhart.",
+  "title": "Meister Eckhart",
+  "authors": "Amber L. Griffioen"
+ },
+ "mencius": {
+  "text": "Mencius (fourth century BCE) was a Confucian philosopher. Often referred to as the “Second Sage” of Confucianism (meaning second in importance only to Confucius himself), Mencius is best known for his claim that “human nature is good.",
+  "title": "Mencius",
+  "authors": "Bryan Van Norden"
+ },
+ "merleau-ponty": {
+  "text": "Maurice Jean Jacques Merleau-Ponty (1908–1961), French philosopher and public intellectual, was the leading academic proponent of existentialism and phenomenology in post-war France. Best known for his original and influential work on embodiment, perception, and ontology, he also made important contributions to the philosophy of art, history, language, nature, and politics.",
+  "title": "Maurice Merleau-Ponty",
+  "authors": "Ted Toadvine"
+ },
+ "mill": {
+  "text": "John Stuart Mill (1806–73) was the most influential English language philosopher of the nineteenth century. He was a naturalist, a utilitarian, and a liberal, whose work explores the consequences of a thoroughgoing empiricist outlook. In doing so, he sought to combine the best of eighteenth-century Enlightenment thinking with newly emerging currents of nineteenth-century Romantic and historical philosophy.",
+  "title": "John Stuart Mill",
+  "authors": "Christopher Macleod"
+ },
+ "mohism": {
+  "text": "Mohism was an influential philosophical, social, and religious movement that flourished during the Warring States era (479–221 BCE) in ancient China. Mohism originates in the teachings of Mo Di, or “Mozi” (“Master Mo,” fl. ca. 430 BCE), from whom it takes its name. Mozi and his followers initiated philosophical argumentation and debate in China.",
+  "title": "Mohism",
+  "authors": "Chris Fraser"
+ },
+ "montaigne": {
+  "text": "The question is not who will hit the ring, but who will make the best runs at it. Given the huge breadth of his readings, Montaigne could have been ranked among the most erudite humanists of the 16 th century. But in the Essays , his aim is above all to exercise his own judgment properly.",
+  "title": "Michel de Montaigne",
+  "authors": "Marc Foglia"
+ },
+ "montesquieu": {
+  "text": "Montesquieu was one of the great political philosophers of the Enlightenment. Insatiably curious and mordantly funny, he constructed a naturalistic account of the various forms of government, and of the causes that made them what they were and that advanced or constrained their development. He used this account to explain how governments might be preserved from corruption.",
+  "title": "Baron de Montesquieu, Charles-Louis de Secondat",
+  "authors": "Hilary Bok"
+ },
+ "moore": {
+  "text": "G.E. Moore (1873-1958) (who hated his first names, ‘George Edward’ and never used them — his wife called him ‘Bill’) was an important British philosopher of the first half of the twentieth century. He was one of the trinity of philosophers at Trinity College Cambridge (the others were Bertrand Russell and Ludwig Wittgenstein) who made Cambridge one of centres of what we now call ‘analytical philosophy’.",
+  "title": "George Edward Moore",
+  "authors": "Tom Baldwin"
+ },
+ "nagarjuna": {
+  "text": "There is unanimous agreement that Nāgārjuna (ca 150–250 CE) is the most important Buddhist philosopher after the historical Buddha himself and one of the most original and influential thinkers in the history of Indian philosophy.",
+  "title": "Nāgārjuna",
+  "authors": "Jan Christoph Westerhoff"
+ },
+ "neoplatonism": {
+  "text": "The term “Neoplatonism” refers to a philosophical school of thought that first emerged and flourished in the Greco-Roman world of late antiquity, roughly from the time of the Roman Imperial Crisis to the Arab conquest, i.e., the middle of the 3 rd to the middle of the 7 th century.",
+  "title": "Neoplatonism",
+  "authors": "Christian Wildberg"
+ },
+ "newton-philosophy": {
+  "text": "Isaac Newton (1642–1727) lived in a philosophically tumultuous time. He witnessed the end of the Aristotelian dominance of philosophy in Europe, the rise and fall of Cartesianism, the emergence of “experimental philosophy,” and the development of numerous experimental and mathematical methods for the study of nature. Indeed, he helped to develop many of those methods.",
+  "title": "Newton’s Philosophy",
+  "authors": "Andrew Janiak"
+ },
+ "nietzsche": {
+  "text": "Friedrich Nietzsche (1844–1900) was a German philosopher and cultural critic who published intensively in the 1870s and 1880s. He is famous for uncompromising criticisms of traditional European morality and religion, as well as of conventional philosophical ideas and social and political pieties associated with modernity.",
+  "title": "Friedrich Nietzsche",
+  "authors": "R. Lanier Anderson"
+ },
+ "nozick-political": {
+  "text": "Robert Nozick (1938–2002) was a renowned American philosopher who first came to be widely known through his 1974 book, Anarchy, State, and Utopia (1974), [ 1 ] which won the National Book Award for Philosophy and Religion in 1975.",
+  "title": "Robert Nozick’s Political Philosophy",
+  "authors": "Eric Mack"
+ },
+ "ockham": {
+  "text": "William of Ockham (c. 1287–1347) is among the most prominent figures in the history of philosophy during the Late Middle Ages along with Thomas Aquinas and John Duns Scotus. He is probably best known today for his espousal of metaphysical nominalism. Indeed, the principle known as “Ockham’s Razor” is named after him.",
+  "title": "William of Ockham",
+  "authors": "Paul Vincent Spade Claude Panaccio Jenny Pelletier"
+ },
+ "paine": {
+  "text": "Thomas Paine was a pamphleteer, controversialist and international revolutionary. His Common Sense (1776) was a central text behind the call for American independence from Britain; his Rights of Man (1791–2) was the most widely read pamphlet in the movement for reform in Britain in the 1790s and for the opening decades of the nineteenth century; he was active in the French Revolution and was a member of the French…",
+  "title": "Thomas Paine",
+  "authors": "Mark Philp"
+ },
+ "parmenides": {
+  "text": "Parmenides of Elea, active in the earlier part of the 5th c. BCE, authored a difficult metaphysical poem that has earned him a reputation as early Greek philosophy’s most profound and challenging thinker. His philosophical stance has typically been understood as at once extremely paradoxical and yet crucial for the broader development of Greek natural philosophy and metaphysics.",
+  "title": "Parmenides",
+  "authors": "John Palmer"
+ },
+ "pascal": {
+  "text": "Pascal did not publish any philosophical works during his relatively brief lifetime. His status in French literature today is based primarily on the posthumous publication of a notebook in which he drafted or recorded ideas for a planned defence of Christianity, the Pensées de M. Pascal sur la religion et sur quelques autres sujets (1670).",
+  "title": "Blaise Pascal",
+  "authors": "Desmond Clarke William Wood"
+ },
+ "peirce": {
+  "text": "Charles Sanders Peirce (1839–1914) was the founder of American pragmatism (after about 1905 called by Peirce “pragmaticism” in order to differentiate his views from those of William James, John Dewey, and others, which were being labelled “pragmatism”), a theorist of logic, language, communication, and the general theory of signs (which was often called by Peirce “semeiotic”), an extraordinarily prolific logician…",
+  "title": "Charles Sanders Peirce",
+  "authors": "Robert Burch"
+ },
+ "phenomenology": {
+  "text": "Phenomenology is the study of structures of consciousness as experienced from the first-person point of view. The central structure of an experience is its intentionality, its being directed toward something, as it is an experience of or about some object. An experience is directed toward an object by virtue of its content or meaning (which represents the object) together with appropriate enabling conditions.",
+  "title": "Phenomenology",
+  "authors": "David Woodruff Smith"
+ },
+ "plato": {
+  "text": "Plato (429?–347 B.C.E.) is, by any reckoning, one of the most dazzling writers in the Western literary tradition and one of the most penetrating, wide-ranging, and influential authors in the history of philosophy.",
+  "title": "Plato",
+  "authors": "Richard Kraut"
+ },
+ "plotinus": {
+  "text": "Plotinus’ philosophy represents one of the supreme intellectual achievements of the period that has come to be called “Late Antiquity”. Plotinus is generally regarded as the founder of Late Antique Platonism, sometimes termed “Neoplatonism”, a school of thought that, while claiming to be the inheritor of the long tradition of ancient Greek rationalism rooted in the period of Presocratic philosophy, is also…",
+  "title": "Plotinus",
+  "authors": "Paul Kalligas"
+ },
+ "popper": {
+  "text": "Karl Popper is generally regarded as one of the greatest philosophers of science of the twentieth century. He was also a social and political philosopher of considerable stature, a self-professed critical-rationalist, a dedicated opponent of all forms of scepticism and relativism in science and in human affairs generally and a committed advocate and staunch defender of the “Open Society”.",
+  "title": "Karl Popper",
+  "authors": "Stephen Thornton"
+ },
+ "porphyry": {
+  "text": "Porphyry (234?–305? C.E.) was a Neoplatonist philosopher born in Tyre in Phoenicia. He studied with Longinus in Athens and then with Plotinus in Rome from 263–269 C.E. and became a follower of the latter’s version of Platonism. Porphyry wrote in just about every branch of learning practiced at the time but only a portion of his large output is extant. Porphyry was an influential thinker.",
+  "title": "Porphyry",
+  "authors": "Eyjólfur Emilsson"
+ },
+ "postmodernism": {
+  "text": "That postmodernism is indefinable is a truism. However, it can be described as a set of critical, strategic and rhetorical practices employing concepts such as difference, repetition, the trace, the simulacrum, and hyperreality to destabilize other concepts such as presence, identity, historical progress, epistemic certainty, and the univocity of meaning.",
+  "title": "Postmodernism",
+  "authors": "Gary Aylesworth"
+ },
+ "pragmatism": {
+  "text": "Pragmatism is a philosophical tradition that – very broadly – understands knowing the world as inseparable from agency within it. This general idea has attracted a remarkably rich and at times contrary range of interpretations, including: that all philosophical concepts should be tested via scientific experimentation, that a claim is true if and only if it is useful (relatedly: if a philosophical theory does not…",
+  "title": "Pragmatism",
+  "authors": "Catherine Legg"
+ },
+ "presocratics": {
+  "text": "The Presocratics were 6 th and 5 th century BCE Greek thinkers who introduced a new way of inquiring into the world and the place of human beings in it. They were recognized in antiquity as the first philosophers and scientists of the Western tradition. This article is a general introduction to the most important Presocratic philosophers and the main themes of Presocratic thought.",
+  "title": "Presocratic Philosophy",
+  "authors": "Patricia Curd"
+ },
+ "protagoras": {
+  "text": "Protagoras (490–420 BCE ca) was one of the most important sophists and exerted considerable influence in fifth-century intellectual debates. His teaching had a practical and concrete goal, and many of the surviving testimonies and fragments suggest that it was mainly devoted to the development of argumentative techniques.",
+  "title": "Protagoras",
+  "authors": "Mauro Bonazzi"
+ },
+ "pyrrho": {
+  "text": "Pyrrho was the starting-point for a philosophical movement known as Pyrrhonism that flourished beginning several centuries after his own time. This later Pyrrhonism was one of the two major traditions of sceptical thought in the Greco-Roman world (the other being located in Plato’s Academy during much of the Hellenistic period).",
+  "title": "Pyrrho",
+  "authors": "Richard Bett"
+ },
+ "pythagoras": {
+  "text": "Pythagoras, one of the most famous and controversial ancient Greek philosophers, lived from ca. 570 to ca. 490 BCE. He spent his early years on the island of Samos, off the coast of modern Turkey. At the age of forty, however, he emigrated to the city of Croton in southern Italy and most of his philosophical activity occurred there.",
+  "title": "Pythagoras",
+  "authors": "Carl Huffman"
+ },
+ "qm-copenhagen": {
+  "text": "As the theory of the atom, quantum mechanics is perhaps the most successful theory in the history of science. It enables physicists, chemists, and technicians to calculate and predict the outcome of a vast number of experiments and to create new and advanced technology based on the insight into the behavior of atomic objects. But it is also a theory that challenges our imagination.",
+  "title": "Copenhagen Interpretation of Quantum Mechanics",
+  "authors": "Jan Faye"
+ },
+ "qt-uncertainty": {
+  "text": "Quantum mechanics is generally regarded as the physical theory that is our best candidate for a fundamental and universal description of the physical world. The conceptual framework employed by this theory differs drastically from that of classical physics. Indeed, the transition from classical to quantum physics marks a genuine revolution in our understanding of the physical world.",
+  "title": "The Uncertainty Principle",
+  "authors": "Jan Hilgevoord Jos Uffink"
+ },
+ "quine": {
+  "text": "Willard Van Orman Quine (1908–2000) worked in theoretical philosophy and in logic. (In practical philosophy—ethics and political philosophy—his contributions are negligible.) He is perhaps best known for his arguments against Logical Empiricism (in particular, against its use of the analytic-synthetic distinction).",
+  "title": "Willard Van Orman Quine",
+  "authors": "Peter Hylton"
+ },
+ "rationalism-empiricism": {
+  "text": "In its most general terms, the dispute between rationalism and empiricism has been taken to concern the extent to which we are dependent upon experience in our effort to gain knowledge of the external world. It is common to think of experience itself as being of two kinds: sense experience, involving our five world-oriented senses, and reflective experience, including conscious awareness of our mental operations.",
+  "title": "Rationalism vs. Empiricism",
+  "authors": "Peter Markie M. Folescu"
+ },
+ "rawls": {
+  "text": "John Rawls (b. 1921, d. 2002) was an American political philosopher in the liberal tradition. His theory of justice as fairness describes a society of free citizens holding equal basic rights and cooperating within an egalitarian economic system.",
+  "title": "John Rawls",
+  "authors": "Leif Wenar"
+ },
+ "rousseau": {
+  "text": "Jean-Jacques Rousseau remains an important figure in the history of philosophy, both because of his contributions to political philosophy and moral psychology and on account of his influence on later thinkers.",
+  "title": "Jean Jacques Rousseau",
+  "authors": "Christopher Bertram"
+ },
+ "russell": {
+  "text": "Bertrand Arthur William Russell (1872–1970) was a British philosopher, logician, essayist and social critic best known for his work in mathematical logic and analytic philosophy. His most influential contributions include his championing of logicism (the view that mathematics is in some important sense reducible to logic), his refining of Gottlob Frege ’s predicate calculus (which still forms the basis of most…",
+  "title": "Bertrand Russell",
+  "authors": "Andrew David Irvine"
+ },
+ "ryle": {
+  "text": "Although Gilbert Ryle published on a wide range of topics in philosophy (notably in the history of philosophy and in philosophy of language), including a series of lectures centred on philosophical dilemmas, a series of articles on the concept of thinking, and a book on Plato, The Concept of Mind remains his best known and most important work. Through this work, Ryle is thought to have accomplished two major tasks.",
+  "title": "Gilbert Ryle",
+  "authors": "Julia Tanney"
+ },
+ "sartre": {
+  "text": "Few philosophers have been as famous in their own life-time as Jean-Paul Sartre (1905–80). Many thousands of Parisians packed into his public lecture, Existentialism is a Humanism , towards the end of 1945 and the culmination of World War 2.",
+  "title": "Jean-Paul Sartre",
+  "authors": "Jack Reynolds"
+ },
+ "schelling": {
+  "text": "Friedrich Wilhelm Joseph von Schelling (1775–1854) is, along with J.G. Fichte and G.W.F. Hegel, one of the three most influential thinkers in the tradition of ‘German Idealism’. Although he is often regarded as a philosophical Proteus who changed his conception so radically and so often that it is hard to attribute one clear philosophical conception to him, Schelling was in fact often an impressively rigorous…",
+  "title": "Friedrich Wilhelm Joseph von Schelling",
+  "authors": "Andrew Bowie"
+ },
+ "schopenhauer": {
+  "text": "Arthur Schopenhauer was among the first 19 th century philosophers to contend that at its core, the universe is not a rational place. Inspired by Plato and Kant, both of whom regarded the world as being more amenable to reason, Schopenhauer developed their philosophies into an instinct-recognizing and ultimately ascetic outlook, emphasizing that in the face of a world filled with endless strife, we ought to minimize…",
+  "title": "Arthur Schopenhauer",
+  "authors": "Robert Wicks"
+ },
+ "seneca": {
+  "text": "Seneca is a major philosophical figure of the Roman Imperial Period. As a Stoic philosopher writing in Latin, Seneca makes a lasting contribution to Stoicism. He occupies a central place in the literature on Stoicism at the time, and shapes the understanding of Stoic thought that later generations were to have. Seneca’s philosophical works played a large role in the revival of Stoic ideas in the Renaissance.",
+  "title": "Seneca",
+  "authors": "Katja Vogt"
+ },
+ "sextus-empiricus": {
+  "text": "Sextus Empiricus was a Pyrrhonian Skeptic living probably in the second or third century CE, many of whose works survive, including the Outlines of Pyrrhonism , the best and fullest account we have of Pyrrhonian skepticism (a kind of skepticism named for Pyrrho (see entry on Ancient Skepticism )).",
+  "title": "Sextus Empiricus",
+  "authors": "Benjamin Morison"
+ },
+ "shankara": {
+  "text": "The classical Indian philosophy of Advaita Vedānta articulates a philosophical position of radical nondualism, a revisionary worldview which it derives from the ancient Upaniṣadic texts. According to Advaita Vedāntins, the Upaniṣads reveal a fundamental principle of nonduality termed “ brahman, ” which is the reality of all things. Advaitins understand brahman as transcending individuality and empirical plurality.",
+  "title": "Śaṅkara",
+  "authors": "Neil Dalal"
+ },
+ "simone-weil": {
+  "text": "Simone Weil (1909–1943) philosophized on thresholds and across borders. Her persistent desire for truth and justice led her to both elite academies and factory floors, political praxis and spiritual solitude. At different times she was an activist, a pacifist, a militant, a mystic, and an exile; but throughout, in her inquiry into reality and orientation to the good, she remained a philosopher.",
+  "title": "Simone Weil",
+  "authors": "A. Rebecca Rozelle-Stone"
+ },
+ "skepticism-ancient": {
+  "text": "The Greek word skepsis means investigation. Literally, a “skeptic” is an inquirer. Not all ancient philosophers whom in retrospect we call “skeptics” refer to themselves as such. Nevertheless, they all embrace ways of life that are devoted to inquiry. Ancient skepticism is as much concerned with belief as with knowledge. As long as knowledge has not been attained, the skeptics aim not to affirm anything.",
+  "title": "Ancient Skepticism",
+  "authors": "Katja Vogt"
+ },
+ "smith-moral-political": {
+  "text": "Adam Smith developed a comprehensive and unusual version of moral sentimentalism in his Theory of Moral Sentiments (1759, TMS). He did not expressly lay out a political philosophy in similar detail, but a distinctive set of views on politics can be extrapolated from elements of both TMS and his Wealth of Nations (1776, WN); student notes from his lectures on jurisprudence (1762–1763, LJ) have also helped flesh out…",
+  "title": "Adam Smith’s Moral and Political Philosophy",
+  "authors": "Samuel Fleischacker"
+ },
+ "socrates": {
+  "text": "Constantin Brancusi. Socrates Image © The Museum of Modern Art; Licensed by Scala/Art Resource, NY ©2005 Artists Rights Society (ARS), New York/ADAGP, Paris reproduced with permission of the Brancusi Estate",
+  "title": "Socrates",
+  "authors": "Debra Nails"
+ },
+ "spacetime-singularities": {
+  "text": "A spacetime singularity is a breakdown in spacetime, either in its geometry or in some other basic physical structure. It is a topic of ongoing physical and philosophical research to clarify both the nature and significance of such pathologies. When it is the fundamental geometry that breaks down, spacetime singularities are often viewed as an end, or “edge”, of spacetime itself.",
+  "title": "Singularities and Black Holes",
+  "authors": "Erik Curiel"
+ },
+ "spinoza": {
+  "text": "Bento (in Hebrew, Baruch; in Latin, Benedictus) Spinoza is one of the most important philosophers—and certainly the most radical—of the early modern period. His thought combines a commitment to a number of Cartesian metaphysical and epistemological principles with elements from ancient Stoicism, Hobbes, and medieval Jewish rationalism into a nonetheless highly original system.",
+  "title": "Baruch Spinoza",
+  "authors": "Steven Nadler"
+ },
+ "stoicism": {
+  "text": "Stoicism was one of the dominant philosophical systems of the Hellenistic period. The name derives from the porch ( stoa poikilê ) in the Agora at Athens decorated with mural paintings, where the first generation of Stoic philosophers congregated and lectured. The school of thought founded there long outlived the physical Athenian porch and notably enjoyed continued popularity in the Roman period and beyond.",
+  "title": "Stoicism",
+  "authors": "Marion Durand"
+ },
+ "thomas-kuhn": {
+  "text": "Thomas Samuel Kuhn (1922–1996) is one of the most influential philosophers of science of the twentieth century, perhaps the most influential. His 1962 book The Structure of Scientific Revolutions is one of the most cited academic books of all time.",
+  "title": "Thomas Kuhn",
+  "authors": "Alexander Bird"
+ },
+ "thoreau": {
+  "text": "Henry David Thoreau (1817–1862) was an American philosopher, poet, environmental scientist, and political activist whose major work, Walden , draws upon each of these various identities in meditating upon the concrete problems of living in the world as a human being. He sought to revive a conception of philosophy as a way of life, not only a mode of reflective thought and discourse.",
+  "title": "Henry David Thoreau",
+  "authors": "Rick Anthony Furtak"
+ },
+ "transcendentalism": {
+  "text": "Transcendentalism is an American literary, philosophical, religious, and political movement of the early nineteenth century, centered around Ralph Waldo Emerson. Other important transcendentalists were Henry David Thoreau, Margaret Fuller, Lydia Maria Child, Amos Bronson Alcott, Frederic Henry Hedge, Elizabeth Palmer Peabody, and Theodore Parker.",
+  "title": "Transcendentalism",
+  "authors": "Russell Goodman"
+ },
+ "turing": {
+  "text": "Alan Turing (1912–1954) never described himself as a philosopher, but his 1950 paper “Computing Machinery and Intelligence” is one of the most frequently cited in modern philosophical literature.",
+  "title": "Alan Turing",
+  "authors": "Andrew Hodges"
+ },
+ "utilitarianism-history": {
+  "text": "Utilitarianism is one of the most powerful and persuasive approaches to normative ethics in the history of philosophy. The approach is a species of consequentialism, which holds that the moral quality of an action or policy is entirely a function of its consequences, or the value produced by the action or policy.",
+  "title": "The History of Utilitarianism",
+  "authors": "Julia Driver"
+ },
+ "vasubandhu": {
+  "text": "The Buddhist philosopher Vasubandhu (4 th to 5 th century C.E.) was a great light at the peak of India’s resplendent Gupta empire. [ 1 ] His works display his mastery of Buddhist as well as non-Buddhist thought of the day, and he made his mark, successively, upon three Buddhist scholastic traditions that are traditionally considered distinct: Vaibhāṣika, Sautrāntika, and Yogācāra.",
+  "title": "Vasubandhu",
+  "authors": "Jonathan C. Gold"
+ },
+ "vico": {
+  "text": "Giovanni Battista Vico (1668–1744) spent most of his professional life as Professor of Rhetoric at the University of Naples. He was trained in jurisprudence, but read widely in Classics, philology, and philosophy, all of which informed his highly original views on history, historiography, and culture. His thought is most fully expressed in his mature work, the Scienza Nuova or The New Science .",
+  "title": "Giambattista Vico",
+  "authors": "Timothy Costelloe"
+ },
+ "voltaire": {
+  "text": "François-Marie d’Arouet (1694–1778), better known by his pen name Voltaire, was a French writer and public activist who played a singular role in defining the eighteenth-century movement called the Enlightenment. At the center of his work was a new conception of philosophy and the philosopher that in several crucial respects influenced the modern concept of each.",
+  "title": "Voltaire",
+  "authors": "J.B. Shank"
+ },
+ "wang-yangming": {
+  "text": "Wang Yangming (1472–1529) was a Chinese statesman, general, and Neo–Confucian philosopher. He was one of the leading critics of the orthodox Neo–Confucianism of Zhu Xi (1130–1200). Wang is perhaps best known for his doctrine of the “unity of knowing and acting,” which can be interpreted as a denial of the possibility of weakness of will.",
+  "title": "Wang Yangming",
+  "authors": "Bryan Van Norden"
+ },
+ "weber": {
+  "text": "Arguably the foremost social theorist of the twentieth century, Max Weber is known as a principal architect of modern social science along with Karl Marx and Émile Durkheim. Weber’s wide-ranging contributions gave critical impetus to the birth of new academic disciplines such as sociology as well as to the significant reorientation in law, economics, political science, and religious studies.",
+  "title": "Max Weber",
+  "authors": "Sung Ho Kim"
+ },
+ "whitehead": {
+  "text": "Alfred North Whitehead (1861–1947) was a British mathematician and philosopher best known for his work in mathematical logic and the philosophy of science. In collaboration with Bertrand Russell, he co-authored the landmark three-volume Principia Mathematica (1910, 1912, 1913). Later, he was instrumental in pioneering the approach to metaphysics now known as process philosophy.",
+  "title": "Alfred North Whitehead",
+  "authors": "Ronald Desmet"
+ },
+ "wittgenstein": {
+  "text": "Considered by some to be the greatest philosopher of the 20th century, Ludwig Wittgenstein played a central, if controversial, role in mid-20th-century analytic philosophy. He continues to influence, and incur debate in, current philosophical thought in topics as diverse as logic and language, perception and intention, ethics and religion, aesthetics and culture, and even political thought.",
+  "title": "Ludwig Wittgenstein",
+  "authors": "Anat Biletzki"
+ },
+ "wollstonecraft": {
+  "text": "Mary Wollstonecraft (1759–1797) is a moral and political philosopher whose analysis of the condition of women in modern society retains much of its original radicalism. One of the reasons her pronouncements on the subject remain challenging is that her reflections on the status of the female sex were part of an attempt to come to a comprehensive understanding of human relations within a civilization increasingly…",
+  "title": "Mary Wollstonecraft",
+  "authors": "Sylvana Tomaselli"
+ },
+ "xunzi": {
+  "text": "Xunzi 荀子 (third century BCE) was a Confucian philosopher, sometimes reckoned as the third of the three great classical Confucians (after Confucius and Mencius). For most of imperial Chinese history, however, Xunzi was a bête noire who was typically cited as an example of a Confucian who went astray by rejecting Mencian convictions.",
+  "title": "Xunzi",
+  "authors": "Paul R. Goldin"
+ },
+ "yogacara": {
+  "text": "Alongside Madhyamaka, Yogācāra is one of the two major philosophical traditions of Mahāyāna Buddhism that originated in India. The philosophical and soteriological ideas set forth in the Yogācāra works had a great impact on the development of Buddhist thought not only in the Indian subcontinent but also in other parts of Asia, especially in China, Japan and Tibet.",
+  "title": "Yogācāra",
+  "authors": "Szilvia Szanyi"
+ },
+ "zeno-elea": {
+  "text": "Zeno of Elea, 5th c. B.C.E. thinker, is known exclusively for propounding a number of ingenious paradoxes. The most famous of these purport to show that motion is impossible by bringing to light apparent or latent contradictions in ordinary assumptions regarding its occurrence.",
+  "title": "Zeno of Elea",
+  "authors": "John Palmer"
+ },
+ "zhu-xi": {
+  "text": "Zhu Xi, the preeminent Neo-Confucian ( daoxue ) master of the Southern Song (1126–1271), is generally ranked as second only to Confucius (551–479 BCE) in influence and as rivaling Zhuangzi (fourth century BCE) in philosophic acumen in the Chinese philosophical tradition.",
+  "title": "Zhu Xi",
+  "authors": "Kirill Thompson"
+ },
+ "zhuangzi": {
+  "text": "Zhuangzi (Chuang-tzu 莊子 “Master Zhuang” late 4th century BC) is the pivotal figure in Classical Philosophical Daoism. The Zhuangzi is a compilation of his and others’ writings at the pinnacle of the philosophically subtle Classical period in China (5th–3rd century BC). The period was marked by humanist and naturalist reflections on normativity shaped by the metaphor of a dào (道)—a social or a natural path .",
+  "title": "Zhuangzi",
+  "authors": "Chad Hansen"
  }
 }
