@@ -204,3 +204,510 @@ header{
 </head>
 <body>
 <div id="app">
+<header>
+  <div class="brand">
+    <h1>The Lineage Engine</h1>
+    <span class="tag">who shaped whom</span>
+  </div>
+  <div class="search" role="search">
+    <span class="icon">&#9906;</span>
+    <input id="q" type="text" placeholder="Search thinkers, books, quotes, schools&hellip;" autocomplete="off" spellcheck="false" aria-label="Search the graph">
+    <kbd>/</kbd>
+    <div id="results" role="listbox"></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="chips" id="chips" role="group" aria-label="Show node kinds">
+    <button class="chip" data-kind="p" aria-pressed="true"><span class="dot" style="background:var(--person)"></span>Thinkers <span class="n" id="np"></span></button>
+    <button class="chip" data-kind="w" aria-pressed="true"><span class="dot sq" style="background:var(--work)"></span>Works <span class="n" id="nw"></span></button>
+    <button class="chip" data-kind="q" aria-pressed="true"><span class="dot di" style="background:var(--quote)"></span>Quotes <span class="n" id="nq"></span></button>
+    <button class="chip" data-kind="m" aria-pressed="true"><span class="dot ri" style="color:var(--school)"></span>Schools <span class="n" id="nm"></span></button>
+  </div>
+  <div class="tools">
+    <button class="tbtn" id="traceBtn" title="Pick two nodes; I chart the chain of influence between them">Trace a lineage</button>
+    <button class="tbtn" id="timeBtn" title="Lay every node on the axis of history">Timeline</button>
+  </div>
+</header>
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="status" class="card"><span id="statusTxt"></span><button class="x" id="statusX" aria-label="Clear">&#10005;</button></div>
+  <div id="hud">
+    <div class="card legend" id="legend">
+      <div class="lr"><span class="dot" style="background:var(--person)"></span>Thinker <span class="k">circle</span></div>
+      <div class="lr"><span class="dot sq" style="background:var(--work)"></span>Work <span class="k">square</span></div>
+      <div class="lr"><span class="dot di" style="background:var(--quote)"></span>Quote <span class="k">diamond</span></div>
+      <div class="lr"><span class="dot ri" style="color:var(--school)"></span>School <span class="k">ring</span></div>
+    </div>
+    <div class="card hint">
+      <b>Hover</b> to light a life &middot; <b>click</b> for the dossier &middot; <b>double&#8209;click</b> to isolate a circle &middot; <b>drag</b> a node to pin it &middot; <b>scroll</b> to zoom &middot; <b>/</b> to search
+    </div>
+  </div>
+  <div id="zoomctl">
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zfit" aria-label="Fit graph" title="Fit">&#8857;</button>
+    <button id="zout" aria-label="Zoom out">&minus;</button>
+  </div>
+  <div id="tooltip"></div>
+  <aside id="panel" aria-label="Details">
+    <div class="p-head">
+      <button class="p-close" id="pclose" aria-label="Close panel">&#10005;</button>
+      <div class="p-kind" id="pkind"></div>
+      <h2 class="p-title" id="ptitle"></h2>
+      <div class="p-meta" id="pmeta"></div>
+    </div>
+    <div class="p-body" id="pbody"></div>
+  </aside>
+</div>
+</div>
+<script>
+'use strict';
+/* ============================================================
+   THE LINEAGE ENGINE - inline db
+   People [id,name,born,died,region,src,blurb,flags]
+     dates: negative = BCE - flags 'c' = dates approximate
+     src: SEP slug at plato.stanford.edu/entries/<slug>
+          or 'iep:<slug>' at iep.utm.edu/<slug>
+   Works  [id,title,byId,year,blurb]
+   Quotes [id,text,byId,fromWorkId,ref,flag]  flag: 'apoc'=apocryphal
+   Schools[id,name,from,to,src,blurb]
+   Edges  [src,type,dst,note]
+   ============================================================ */
+const DB = {
+people: [
+["thales","Thales",-624,-546,"Miletus","presocratics","Predicted an eclipse, called water the first principle - Western philosophy's traditional starting gun.","c"],
+["pythagoras","Pythagoras",-570,-495,"Samos & Croton","pythagoras","Ran a secretive commune convinced that number is the deep grammar of the cosmos.","c"],
+["heraclitus","Heraclitus",-535,-475,"Ephesus","heraclitus","The obscure aphorist of flux: fire, strife, and a river you cannot step in twice.","c"],
+["parmenides","Parmenides",-515,-450,"Elea","parmenides","Argued change and plurality are illusions of mortals; Being is one, unmoving, complete.","c"],
+["zenoelea","Zeno of Elea",-490,-430,"Elea","zeno-elea","Defended Parmenides with paradoxes - Achilles, the tortoise, the arrow frozen mid-flight.","c"],
+["democritus","Democritus",-460,-370,"Abdera","democritus","The laughing philosopher: nothing exists but atoms and void, endlessly recombining.","c"],
+["protagoras","Protagoras",-490,-420,"Abdera","protagoras","Star sophist who taught virtue for a fee and made man the measure of all things.","c"],
+["socrates","Socrates",-470,-399,"Athens","socrates","Wrote nothing, questioned everyone, and drank the hemlock rather than stop.",""],
+["plato","Plato",-428,-348,"Athens","plato","Turned his teacher's execution into dialogues that set the agenda for everything after.",""],
+["aristotle","Aristotle",-384,-322,"Stagira & Athens","aristotle","The Academy's greatest student and sharpest defector: logic, biology, ethics, politics - one architecture.",""],
+["diogenes","Diogenes of Sinope",-412,-323,"Sinope & Athens","iep:diogenes-of-sinope","Lived in a jar, mocked Alexander, and performed shamelessness as philosophy.","c"],
+["epicurus","Epicurus",-341,-270,"Samos & Athens","epicurus","Bought a garden and taught that pleasure rightly understood is tranquility, not excess.",""],
+["zenocitium","Zeno of Citium",-334,-262,"Citium & Athens","stoicism","Shipwrecked merchant who founded Stoicism on a painted porch in the Athenian agora.","c"],
+["pyrrho","Pyrrho",-360,-270,"Elis","pyrrho","Marched to India with Alexander and came back suspending judgement on everything.","c"],
+["lucretius","Lucretius",-99,-55,"Rome","lucretius","Set Epicurus' physics to Latin hexameter to talk Rome out of fearing death.","c"],
+["cicero","Cicero",-106,-43,"Rome","cicero","Statesman who built Latin a philosophical vocabulary while the Republic burned around him.",""],
+["seneca","Seneca",-4,65,"Rome","seneca","Stoic tutor to Nero; wrote on the shortness of life, then was ordered to end his own.","c"],
+["epictetus","Epictetus",50,135,"Hierapolis & Nicopolis","epictetus","Born enslaved, lamed, exiled - and taught that freedom lives entirely in judgement.","c"],
+["marcus","Marcus Aurelius",121,180,"Rome","marcus-aurelius","Emperor of Rome writing private reminders to himself to stay decent. Never meant for us.",""],
+["sextus","Sextus Empiricus",160,210,"Alexandria?","sextus-empiricus","Physician whose systematic doubt, rediscovered in 1562, detonated under early modern Europe.","c"],
+["plotinus","Plotinus",204,270,"Alexandria & Rome","plotinus","Mystic metaphysician of the One, from which all reality emanates like light.",""],
+["augustine","Augustine",354,430,"Hippo","augustine","Restless North African rhetor who fused Plato with Christianity and invented the inner life.",""],
+["boethius","Boethius",477,524,"Rome & Pavia","boethius","Translated what Greek logic he could before execution; wrote his Consolation awaiting it.","c"],
+["confucius","Confucius",-551,-479,"Lu, China","confucius","Itinerant teacher of ritual, reciprocity, and self-cultivation; China's master of masters.",""],
+["laozi","Laozi",-571,-471,"Zhou, China","laozi","The shadowy Old Master of the Daodejing: act by not forcing, like water wearing stone.","c"],
+["mozi","Mozi",-470,-391,"Lu, China","mohism","Craftsman-philosopher preaching impartial concern for all - against Confucian partiality.","c"],
+["zhuangzi","Zhuangzi",-369,-286,"Song, China","zhuangzi","Dreamed he was a butterfly and woke unsure which was dreaming which.","c"],
+["mencius","Mencius",-372,-289,"Zou, China","mencius","Argued human nature sprouts toward goodness as surely as water flows downhill.","c"],
+["xunzi","Xunzi",-310,-235,"Zhao, China","xunzi","The Confucian realist: our nature is crooked; ritual is the steam that bends the wood straight.","c"],
+["hanfeizi","Han Feizi",-280,-233,"Han, China","chinese-legalism","Aristocrat who distrusted virtue and built statecraft from law, technique, and leverage.","c"],
+["buddha","Siddhartha Gautama",-563,-483,"Shakya, India","buddha","Left a palace to diagnose suffering: its cause is craving, and there is a path out.","c"],
+["nagarjuna","Nagarjuna",150,250,"South India","nagarjuna","Buddhism's dialectician: all things are empty of self-nature - even emptiness.","c"],
+["shankara","Shankara",700,750,"Kerala, India","shankara","Advaita's architect: Brahman alone is real; the world of difference is misperception.","c"],
+["dogen","Dogen",1200,1253,"Japan","japanese-zen","Brought Soto Zen from China: practice is not a means to enlightenment - it is enlightenment.",""],
+["zhuxi","Zhu Xi",1130,1200,"Song China","zhu-xi","Synthesized Neo-Confucianism into the orthodoxy examined into every Chinese official for 600 years.",""],
+["wangyangming","Wang Yangming",1472,1529,"Ming China","wang-yangming","General-philosopher of the School of Mind: knowing and acting are one act.",""],
+["nishida","Nishida Kitaro",1870,1945,"Kyoto","nishida-kitaro","Sat zazen, read James and Hegel, and built Japan's first original modern philosophy from 'pure experience'.",""],
+["alfarabi","Al-Farabi",870,950,"Baghdad","al-farabi","'The Second Teacher' after Aristotle; mapped the virtuous city onto Islamic political life.","c"],
+["avicenna","Avicenna (Ibn Sina)",980,1037,"Bukhara & Persia","ibn-sina","Physician-philosopher whose 'floating man' found the self without the senses.",""],
+["ghazali","Al-Ghazali",1058,1111,"Tus & Baghdad","al-ghazali","Star jurist who broke down, wandered as a Sufi, and indicted the philosophers' incoherence.",""],
+["averroes","Averroes (Ibn Rushd)",1126,1198,"Cordoba","ibn-rushd","Andalusian judge whose Aristotle commentaries lit up Latin Europe - 'The Commentator'.",""],
+["maimonides","Maimonides",1138,1204,"Cordoba & Cairo","maimonides","Rabbi, physician to Saladin's court, guide for the perplexed between Torah and Aristotle.",""],
+["anselm","Anselm",1033,1109,"Bec & Canterbury","anselm","Archbishop who tried to prove God from the concept of that than which nothing greater can be thought.",""],
+["abelard","Peter Abelard",1079,1142,"Paris","abelard","Combative Paris logician; his ethics of intention and his ruinous love of Heloise both scandalized the age.",""],
+["aquinas","Thomas Aquinas",1225,1274,"Naples & Paris","aquinas","The ox-like Dominican who married Aristotle to Christian doctrine in cathedral-sized prose.",""],
+["scotus","Duns Scotus",1266,1308,"Oxford & Paris","duns-scotus","The Subtle Doctor: haecceity, univocal being, and the primacy of will over intellect.","c"],
+["ockham","William of Ockham",1287,1347,"Oxford & Munich","ockham","Franciscan razor-wielder: never multiply entities beyond necessity.","c"],
+["machiavelli","Niccolo Machiavelli",1469,1527,"Florence","machiavelli","Exiled diplomat who wrote what princes do rather than what they should.",""],
+["montaigne","Michel de Montaigne",1533,1592,"Bordeaux","montaigne","Retired to a tower with the skeptics painted on his beams and invented the essay.",""],
+["bacon","Francis Bacon",1561,1626,"London","francis-bacon","Lord Chancellor who indicted Aristotelian science and drafted the experimental method.",""],
+["hobbes","Thomas Hobbes",1588,1679,"Malmesbury & Paris","hobbes","Born to fear, as he said; deduced the absolute state from the war of all against all.",""],
+["descartes","Rene Descartes",1596,1650,"France & Netherlands","descartes","Doubted everything down to one indubitable point and rebuilt the world from it.",""],
+["pascal","Blaise Pascal",1623,1662,"Paris","pascal","Prodigy of geometry and grace, terrified by infinite spaces, wagering on God.",""],
+["spinoza","Baruch Spinoza",1632,1677,"Amsterdam & The Hague","spinoza","Excommunicated lens-grinder who geometrized God into Nature itself.",""],
+["locke","John Locke",1632,1704,"England","locke","Physician of the mind as blank slate and of government by consent.",""],
+["newton","Isaac Newton",1643,1727,"Cambridge & London","newton","Unified heaven and earth under one law of gravitation; philosophy's model of explanation ever since.",""],
+["leibniz","G. W. Leibniz",1646,1716,"Hanover","leibniz","Diplomat-polymath: monads, sufficient reason, calculus, and the best of all possible worlds.",""],
+["berkeley","George Berkeley",1685,1753,"Ireland","berkeley","Bishop who dissolved matter entirely: to be is to be perceived.",""],
+["voltaire","Voltaire",1694,1778,"Paris & Ferney","voltaire","The Enlightenment's wit and attack dog - against optimism, fanaticism, and infamy.",""],
+["hume","David Hume",1711,1776,"Edinburgh","hume","Genial skeptic who reduced causation to habit and subordinated reason to the passions.",""],
+["rousseau","Jean-Jacques Rousseau",1712,1778,"Geneva & Paris","rousseau","Citizen of Geneva: civilization corrupts, and legitimate rule rests on the general will.",""],
+["smith","Adam Smith",1723,1790,"Kirkcaldy & Glasgow","smith-moral-political","Moral philosopher of sympathy first, market's invisible hand second.",""],
+["kant","Immanuel Kant",1724,1804,"Konigsberg","kant","Never left his province; revolutionized every field he touched. Mind legislates to nature.",""],
+["bentham","Jeremy Bentham",1748,1832,"London","bentham","Reformer with a felicific calculus: the greatest happiness of the greatest number.",""],
+["wollstonecraft","Mary Wollstonecraft",1759,1797,"London","wollstonecraft","Answered Burke and Rousseau alike: reason has no sex; educate women as humans.",""],
+["fichte","J. G. Fichte",1762,1814,"Jena & Berlin","johann-fichte","Radicalized Kant: the I posits itself, and the world is the field of its striving.",""],
+["hegel","G. W. F. Hegel",1770,1831,"Jena & Berlin","hegel","History as Spirit coming to know itself through contradiction - the total system.",""],
+["schopenhauer","Arthur Schopenhauer",1788,1860,"Frankfurt","schopenhauer","Pessimist of the blind Will; found in art, compassion, and the Upanishads a brief exit.",""],
+["emerson","Ralph Waldo Emerson",1803,1882,"Concord","emerson","Ex-minister of self-reliance: an original relation to the universe, here, in America.",""],
+["mill","John Stuart Mill",1806,1873,"London","mill","Bentham's prodigy, broken and rebuilt by poetry; liberty's most careful defender.",""],
+["harriet","Harriet Taylor Mill",1807,1858,"London","harriet-mill","Mill called her co-author of his best work; argued the enfranchisement of women on utilitarian ground.",""],
+["kierkegaard","Soren Kierkegaard",1813,1855,"Copenhagen","kierkegaard","Wrote under masks against the System: truth is subjectivity, faith a leap over 70,000 fathoms.",""],
+["thoreau","Henry David Thoreau",1817,1862,"Concord","thoreau","Built a cabin at Walden to live deliberately; went to jail rather than fund an unjust war.",""],
+["marx","Karl Marx",1818,1883,"Trier & London","marx","Stood Hegel on his feet: history is class struggle, and philosophy's job is to change it.",""],
+["peirce","C. S. Peirce",1839,1914,"Cambridge, Mass.","peirce","Cantankerous logician who founded pragmatism, then renamed it to keep it rigorous.",""],
+["james","William James",1842,1910,"Harvard","james","Psychologist of the stream of consciousness; truth is what works in the living of it.",""],
+["nietzsche","Friedrich Nietzsche",1844,1900,"Basel & Sils Maria","nietzsche","Philologist with a hammer: God is dead, values must be revalued, amor fati.",""],
+["frege","Gottlob Frege",1848,1925,"Jena","frege","Quiet mathematician whose new logic quietly began analytic philosophy.",""],
+["bergson","Henri Bergson",1859,1941,"Paris","bergson","Philosopher of lived time - duration - against the clock; once out-drew Einstein's crowd.",""],
+["dewey","John Dewey",1859,1952,"Chicago & Columbia","dewey","Pragmatism as democracy's philosophy: inquiry, education, and experience all the way down.",""],
+["husserl","Edmund Husserl",1859,1938,"Freiburg","husserl","To the things themselves: founded phenomenology as rigorous description of experience.",""],
+["dubois","W. E. B. Du Bois",1868,1963,"Great Barrington & Atlanta","dubois","First Black Harvard PhD; named double consciousness and the color-line's century.",""],
+["whitehead","A. N. Whitehead",1861,1947,"Cambridge & Harvard","whitehead","Co-wrote Principia Mathematica, then rebuilt metaphysics out of process and event.",""],
+["russell","Bertrand Russell",1872,1970,"Cambridge","russell","Logic's aristocrat and prison-going pacifist; analyzed language to dissolve metaphysics.",""],
+["einstein","Albert Einstein",1879,1955,"Bern & Princeton","einstein-philscience","Read Hume and Mach, then relativized space and time; believed in Spinoza's God.",""],
+["wittgenstein","Ludwig Wittgenstein",1889,1951,"Vienna & Cambridge","wittgenstein","Wrote two philosophies: one ended philosophy in silence, the other in ordinary language games.",""],
+["heidegger","Martin Heidegger",1889,1976,"Freiburg","heidegger","Asked the forgotten question of Being; entangled philosophy - and himself, disgracefully - in his time.",""],
+["carnap","Rudolf Carnap",1891,1970,"Vienna & Chicago","carnap","Vienna Circle's engineer: logic plus experience, and metaphysics exposed as syntax errors.",""],
+["adorno","Theodor Adorno",1903,1969,"Frankfurt","adorno","Dialectician of the culture industry; after Auschwitz, thought against itself.",""],
+["popper","Karl Popper",1902,1994,"Vienna & London","popper","Science grows by conjecture and refutation; societies stay open the same way.",""],
+["sartre","Jean-Paul Sartre",1905,1980,"Paris","sartre","Existence precedes essence: we are condemned to freedom and responsible for everything we make of it.",""],
+["arendt","Hannah Arendt",1906,1975,"Hanover & New York","arendt","Theorist of action, natality, and totalitarianism; scandalized everyone reporting evil's banality.",""],
+["beauvoir","Simone de Beauvoir",1908,1986,"Paris","beauvoir","Applied existential freedom to the situation of women and founded modern feminist philosophy.",""],
+["merleau","Maurice Merleau-Ponty",1908,1961,"Paris","merleau-ponty","Phenomenologist of the body: perception is not in the head - we are our grip on the world.",""],
+["quine","W. V. O. Quine",1908,2000,"Harvard","quine","Demolished empiricism's two dogmas from inside; our knowledge a web touching experience only at the edges.",""],
+["weil","Simone Weil",1909,1943,"Paris & London","simone-weil","Worked the factory lines she philosophized about; attention as prayer, affliction as teacher.",""],
+["camus","Albert Camus",1913,1960,"Algiers & Paris","camus","Goalkeeper of the absurd: no appeal from a silent universe, so revolt, and imagine Sisyphus happy.",""],
+["anscombe","Elizabeth Anscombe",1919,2001,"Oxford & Cambridge","anscombe","Wittgenstein's translator and executor; her 'Intention' and 'Modern Moral Philosophy' rerouted ethics.",""],
+["rawls","John Rawls",1921,2002,"Harvard","rawls","Asked what rules you'd choose behind a veil of ignorance and rebuilt political philosophy.",""],
+["kuhn","Thomas Kuhn",1922,1996,"Berkeley & MIT","thomas-kuhn","Science moves not by accumulation but by paradigm and revolution.",""],
+["fanon","Frantz Fanon",1925,1961,"Martinique & Algeria","frantz-fanon","Psychiatrist of colonialism's violence - on the skin, in the mind, and in its overthrow.",""],
+["deleuze","Gilles Deleuze",1925,1995,"Paris","deleuze","Philosophy as concept-creation: difference before identity, rhizomes before roots.",""],
+["foucault","Michel Foucault",1926,1984,"Paris","foucault","Historian of the present: madness, clinics, prisons - power producing the very selves it governs.",""],
+["habermas","Jurgen Habermas",1929,null,"Frankfurt","habermas","Critical theory's second generation: reason survives as the give-and-take of communication.",""],
+["gadamer","Hans-Georg Gadamer",1900,2002,"Heidelberg","gadamer","Understanding as fusion of horizons; prejudice is where interpretation starts, not ends.",""],
+["derrida","Jacques Derrida",1930,2004,"Algiers & Paris","derrida","Deconstruction: every text undoes its own oppositions, and writing precedes speech.",""],
+["hawking","Stephen Hawking",1942,2018,"Cambridge","newton","Held Newton's chair, radiated black holes, and declared philosophy dead - in a philosophy book.",""]
+],
+works: [
+["apology","Apology","plato",-399,"Socrates' defense speech at his trial - philosophy's founding martyrdom, in his student's hand."],
+["republic","The Republic","plato",-380,"Justice in the soul writ large in the city: philosopher-kings, the divided line, the cave."],
+["metaphysics","Metaphysics","aristotle",-350,"The science of being qua being - and the unmoved mover it climbs to."],
+["ethics","Nicomachean Ethics","aristotle",-340,"Happiness as activity of soul in accordance with virtue, lived over a whole life."],
+["politics","Politics","aristotle",-330,"Constitutions compared by a biologist's eye: the city exists for living well."],
+["analects","Analects","confucius",-450,"Sayings collected by disciples: ritual, humaneness, and the gentleman's self-cultivation."],
+["daodejing","Daodejing","laozi",-400,"Eighty-one cryptic verses on the Way that cannot be spoken."],
+["zhuangzibook","Zhuangzi","zhuangzi",-300,"Parables of pivoting perspective: useless trees, skillful butchers, dreaming butterflies."],
+["menciusbook","Mencius","mencius",-300,"Dialogues with kings defending the four sprouts of innate goodness."],
+["dhammapada","Dhammapada","buddha",-300,"Verses of the Buddha's teaching, compiled by tradition: the mind trained out of suffering."],
+["mmk","Mulamadhyamakakarika","nagarjuna",200,"Verses on the Middle Way: emptiness argued with relentless tetralemmas."],
+["drn","On the Nature of Things","lucretius",-55,"Epicurean physics as epic poetry - atoms, void, and freedom from the gods' menace."],
+["menoeceus","Letter to Menoeceus","epicurus",-300,"Epicurus' pocket guide to happiness: philosophize young and old; death is nothing."],
+["shortness","On the Shortness of Life","seneca",49,"Life is long enough if you know how to use it - an essay against busy waste."],
+["enchiridion","Enchiridion","epictetus",125,"The Stoic handbook, transcribed by a student: what is up to us, and what is not."],
+["meditations","Meditations","marcus",175,"An emperor's private exercises in perspective, duty, and mortality."],
+["outlines","Outlines of Pyrrhonism","sextus",200,"The skeptic's manual: modes for suspending judgement and finding tranquility."],
+["enneads","Enneads","plotinus",270,"Six sets of nine treatises on the One, Intellect, and Soul, edited by Porphyry."],
+["confessions","Confessions","augustine",397,"The first inner autobiography: theft of pears, restless heart, time and memory."],
+["consolation","The Consolation of Philosophy","boethius",524,"Lady Philosophy visits a condemned man's cell to talk of fortune and providence."],
+["proslogion","Proslogion","anselm",1078,"The ontological argument, framed as a prayer."],
+["incoherence","The Incoherence of the Philosophers","ghazali",1095,"Twenty charges against the Aristotelians of Islam, three of them capital."],
+["incoherence2","The Incoherence of the Incoherence","averroes",1180,"Averroes' point-by-point rebuttal of al-Ghazali, in defense of philosophy."],
+["guide","The Guide for the Perplexed","maimonides",1190,"For readers torn between scripture and science - negative theology as the bridge."],
+["summa","Summa Theologica","aquinas",1270,"Objections, sed contra, response: the medieval synthesis at full cathedral scale."],
+["prince","The Prince","machiavelli",1513,"Advice for new rulers on the economy of cruelty and the uses of appearance."],
+["essais","Essays","montaigne",1580,"Attempts at self-portraiture that keep catching the whole human condition."],
+["novum","Novum Organum","bacon",1620,"A new instrument for the mind: idols diagnosed, induction prescribed."],
+["leviathan","Leviathan","hobbes",1651,"From the state of nature to the mortal god of the commonwealth, by geometry."],
+["discourse","Discourse on the Method","descartes",1637,"Autobiography of doubt, four rules of method, and the cogito."],
+["meditationsfp","Meditations on First Philosophy","descartes",1641,"Six days of demolition and rebuilding: demon, cogito, God, world."],
+["pensees","Pensees","pascal",1670,"Fragments for an unfinished defense of Christianity - wretchedness and greatness of man."],
+["ethicssp","Ethics","spinoza",1677,"God-or-Nature demonstrated in geometrical order, ending in intellectual love."],
+["essayhu","An Essay Concerning Human Understanding","locke",1689,"No innate ideas: the mind furnished entirely by experience."],
+["principia","Principia Mathematica","newton",1687,"The mathematical principles of natural philosophy - the law-governed universe."],
+["theodicee","Theodicy","leibniz",1710,"Why a perfect God permits evil: this is the best of all possible worlds."],
+["principlesb","A Treatise Concerning the Principles of Human Knowledge","berkeley",1710,"Matter abolished; only spirits and their ideas remain."],
+["candide","Candide","voltaire",1759,"Optimism's demolition by picaresque catastrophe."],
+["treatise","A Treatise of Human Nature","hume",1739,"The experimental method brought to the mind - it fell dead-born from the press."],
+["enquiry","An Enquiry Concerning Human Understanding","hume",1748,"The Treatise recast: custom, miracles, and the limits of reason."],
+["socialcontract","The Social Contract","rousseau",1762,"Legitimate authority from the general will - chains examined."],
+["tms","The Theory of Moral Sentiments","smith",1759,"Sympathy and the impartial spectator as morality's engine."],
+["cpr","Critique of Pure Reason","kant",1781,"Reason put on trial: what can be known, and what only thought."],
+["groundwork","Groundwork of the Metaphysics of Morals","kant",1785,"The categorical imperative: act only on maxims you could will as universal law."],
+["vindication","A Vindication of the Rights of Woman","wollstonecraft",1792,"If woman seems shallow, look to her education - a demand for rational equality."],
+["ipml","An Introduction to the Principles of Morals and Legislation","bentham",1789,"Pleasure and pain as sovereign masters; law rebuilt on utility."],
+["phenomenology","Phenomenology of Spirit","hegel",1807,"Consciousness' long education, from sense-certainty to absolute knowing."],
+["por","Elements of the Philosophy of Right","hegel",1821,"Freedom actualized in property, morality, family, civil society, state."],
+["wwr","The World as Will and Representation","schopenhauer",1818,"Behind every representation, one blind striving Will - and art's brief anesthesia."],
+["fear","Fear and Trembling","kierkegaard",1843,"Abraham on Moriah: the teleological suspension of the ethical."],
+["anxiety","The Concept of Anxiety","kierkegaard",1844,"Anxiety as freedom's dizziness before its own possibility."],
+["manifesto","The Communist Manifesto","marx",1848,"All history is class struggle; a specter haunts Europe."],
+["capital","Capital","marx",1867,"The critique of political economy: commodity, surplus value, accumulation."],
+["onliberty","On Liberty","mill",1859,"One very simple principle: power over anyone against their will only to prevent harm to others."],
+["utilbook","Utilitarianism","mill",1861,"Higher and lower pleasures; the greatest happiness defended from its caricatures."],
+["walden","Walden","thoreau",1854,"Two years by a pond, driving life into a corner to know it."],
+["selfreliance","Self-Reliance","emerson",1841,"Whoso would be a man must be a nonconformist."],
+["gay","The Gay Science","nietzsche",1882,"The madman's lantern announces God's death - and eternal recurrence dawns."],
+["tsz","Thus Spoke Zarathustra","nietzsche",1883,"A book for all and none: the overman, the last man, the eternal return, in prophetic song."],
+["bge","Beyond Good and Evil","nietzsche",1886,"Prelude to a philosophy of the future: truths as perspectives, morality as symptom."],
+["twilight","Twilight of the Idols","nietzsche",1888,"How to philosophize with a hammer - sounding out hollow idols."],
+["pragmatismbook","Pragmatism","james",1907,"A new name for old ways of thinking: truth's cash-value in experience."],
+["creative","Creative Evolution","bergson",1907,"The elan vital against mechanism - evolution as ceaseless invention."],
+["tractatus","Tractatus Logico-Philosophicus","wittgenstein",1921,"Seven propositions from world to silence; the ladder thrown away after climbing."],
+["pi","Philosophical Investigations","wittgenstein",1953,"Meaning as use, language-games, private language dismantled - against the Tractatus' author."],
+["beingtime","Being and Time","heidegger",1927,"Dasein analyzed: thrownness, care, being-toward-death, authenticity."],
+["processreality","Process and Reality","whitehead",1929,"Actual occasions and prehensions: reality as process, God included."],
+["bn","Being and Nothingness","sartre",1943,"Consciousness as nothingness, bad faith, the look of the Other."],
+["secondsex","The Second Sex","beauvoir",1949,"Woman as Other, made not born - existentialism's most consequential application."],
+["sisyphus","The Myth of Sisyphus","camus",1942,"The one serious philosophical problem is suicide; the answer is revolt."],
+["eichmann","Eichmann in Jerusalem","arendt",1963,"A report on the banality of evil - thoughtlessness as catastrophe."],
+["minima","Minima Moralia","adorno",1951,"Reflections from damaged life, in aphorisms cut like glass."],
+["opensociety","The Open Society and Its Enemies","popper",1945,"Plato, Hegel, Marx arraigned as prophets of closed societies - written as the bombs fell."],
+["structure","The Structure of Scientific Revolutions","kuhn",1962,"Normal science, anomaly, crisis, paradigm shift - the book that shifted its own."],
+["toj","A Theory of Justice","rawls",1971,"Justice as fairness, chosen behind the veil of ignorance."],
+["mmp","Modern Moral Philosophy","anscombe",1958,"The paper that coined 'consequentialism' and sent ethics back to virtue."],
+["discipline","Discipline and Punish","foucault",1975,"From spectacle of the scaffold to the panopticon's quiet surveillance."],
+["hs1","The History of Sexuality, Vol. 1","foucault",1976,"Against the repressive hypothesis: power produces discourse, not silence."],
+["grammatology","Of Grammatology","derrida",1967,"Writing under erasure: deconstruction's founding text."],
+["souls","The Souls of Black Folk","dubois",1903,"Essays behind the veil: double consciousness and the color-line."],
+["wretched","The Wretched of the Earth","fanon",1961,"Decolonization anatomized, with Sartre's incendiary preface."],
+["shobogenzo","Shobogenzo","dogen",1240,"Zen's treasury of the true dharma eye: being-time, practice-realization."],
+["chuanxilu","Instructions for Practical Living","wangyangming",1518,"Dialogues of the School of Mind: innate knowing extended into action."],
+["inquirygood","An Inquiry into the Good","nishida",1911,"Pure experience prior to subject and object - Zen thought in Western form."],
+["relativity","Relativity: The Special and the General Theory","einstein",1917,"Einstein's own plain-language tour of curved spacetime."],
+["briefhistory","A Brief History of Time","hawking",1988,"From big bang to black holes - physics claiming philosophy's oldest questions."]
+],
+  <header>
+    <div class="brand">
+      <h1>The Lineage Engine</h1>
+      <span class="tag">2,600 years of argument</span>
+    </div>
+    <div class="search">
+      <span class="icon">&#9906;</span>
+      <input id="q" type="text" placeholder="Search thinkers, works, quotes, schools" autocomplete="off" spellcheck="false" aria-label="Search the graph">
+      <kbd>/</kbd>
+      <div id="results" role="listbox"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button class="tbtn" id="btnTrace" title="Trace the shortest chain of association between two nodes">Trace</button>
+      <button class="tbtn" id="btnTime" title="Lay the graph out by date">Timeline</button>
+      <button class="tbtn" id="btnRand" title="Jump somewhere unexpected">Surprise me</button>
+      <button class="tbtn" id="btnReset" title="Reset the view">Reset</button>
+    </div>
+  </header>
+
+  <div id="stage">
+    <canvas id="cv"></canvas>
+
+    <div id="status" class="card">
+      <span id="statusText"></span>
+      <button class="x" id="statusX" aria-label="Dismiss">&#10005;</button>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <div id="hud">
+      <div class="card legend" id="legend"></div>
+      <div class="card hint">
+        <b>Click</b> a node to open it &middot; <b>Double-click</b> to isolate its
+        neighbourhood &middot; <b>Drag</b> to pin &middot; <b>Scroll</b> to zoom
+      </div>
+    </div>
+
+    <div id="zoomctl">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">&minus;</button>
+      <button id="zfit" aria-label="Fit to screen" title="Fit">&#9635;</button>
+    </div>
+
+    <aside id="panel" aria-live="polite">
+      <div class="p-head">
+        <div class="p-kind" id="pKind"></div>
+        <h2 class="p-title" id="pTitle"></h2>
+        <div class="p-meta" id="pMeta"></div>
+        <button class="p-close" id="pClose" aria-label="Close panel">&#10005;</button>
+      </div>
+      <div class="p-body" id="pBody"></div>
+    </aside>
+  </div>
+</div>
+<script>
+/* ============================================================================
+   DATA
+   Schema and sourcing rules: see SPEC.md
+   person [id, name, born, died, region, sep, blurb]
+   Dates: negative = BCE, null = living/unknown.
+   ========================================================================== */
+const PEOPLE = [
+["thales","Thales of Miletus",-624,-546,"Ionia","presocratics","Began it: the first to explain the world without gods, proposing that everything is ultimately water."],
+["anaximander","Anaximander",-610,-546,"Ionia","presocratics","Student of Thales who replaced water with the apeiron, the boundless, and drew the first map of the world."],
+["pythagoras","Pythagoras",-570,-495,"Samos / Croton","pythagoras","Founded a religious-mathematical order on the conviction that number is the substance of reality."],
+["heraclitus","Heraclitus",-535,-475,"Ephesus","heraclitus","The obscure one. Everything flows; strife is justice; the way up and the way down are one and the same."],
+["parmenides","Parmenides",-515,-450,"Elea","parmenides","Argued from pure logic that change and plurality are illusions: what is, is; what is not, cannot be."],
+["zeno-elea","Zeno of Elea",-490,-430,"Elea","zeno-elea","Defended Parmenides with paradoxes of motion that mathematicians spent two millennia dismantling."],
+["empedocles","Empedocles",-494,-434,"Acragas","empedocles","Four roots, love and strife. Reputedly leapt into Etna to prove his divinity."],
+["anaxagoras","Anaxagoras",-500,-428,"Clazomenae","anaxagoras","Nous, mind, sets matter spinning. Tried for impiety for calling the sun a red-hot stone."],
+["democritus","Democritus",-460,-370,"Abdera","democritus","With Leucippus, invented atomism: nothing exists but atoms and the void."],
+["protagoras","Protagoras",-490,-420,"Abdera","protagoras","The first sophist. Man is the measure of all things, which made truth a local matter."],
+["gorgias","Gorgias",-483,-375,"Leontini","presocratics","Rhetorician who argued nothing exists; if it did we could not know it; if we knew it we could not say it."],
+["socrates","Socrates",-470,-399,"Athens","socrates","Wrote nothing, questioned everyone, and was executed for it. The hinge of Western philosophy."],
+["plato","Plato",-428,-348,"Athens","plato","Socrates' student. Invented the Academy, the theory of Forms, and the philosophical dialogue."],
+["aristotle","Aristotle",-384,-322,"Stagira / Athens","aristotle","Plato's student, Alexander's tutor. Founded logic, biology, and most of the vocabulary still in use."],
+["antisthenes","Antisthenes",-445,-365,"Athens","presocratics","Socratic who preferred virtue to comfort, seeding Cynicism."],
+["diogenes","Diogenes of Sinope",-412,-323,"Sinope / Corinth","presocratics","Lived in a jar, mocked Alexander, and made shamelessness a philosophical method."],
+["epicurus","Epicurus",-341,-270,"Samos / Athens","epicurus","Pleasure is the absence of pain. Ran a school that admitted women and slaves."],
+["zeno-citium","Zeno of Citium",-334,-262,"Citium / Athens","stoicism","Shipwrecked into philosophy; founded Stoicism on a painted porch."],
+["pyrrho","Pyrrho of Elis",-360,-270,"Elis","pyrrho","Travelled to India with Alexander and came back suspending judgement about everything."],
+["chrysippus","Chrysippus",-279,-206,"Soli / Athens","stoicism","Systematised Stoicism and built a propositional logic the moderns had to rediscover."],
+["cicero","Cicero",-106,-43,"Rome","cicero","Translated Greek philosophy into Latin and thereby into Europe. Murdered by Antony's men."],
+["lucretius","Lucretius",-99,-55,"Rome","lucretius","Put Epicurean atomism into hexameter verse. His rediscovery in 1417 helped ignite the Renaissance."],
+["seneca","Seneca",-4,65,"Corduba / Rome","seneca","Stoic, playwright, and Nero's tutor; ordered by his pupil to open his veins."],
+["epictetus","Epictetus",50,135,"Hierapolis / Nicopolis","epictetus","Born enslaved. Taught that only our judgements are ours, and that this is enough."],
+["marcus-aurelius","Marcus Aurelius",121,180,"Rome","marcus-aurelius","Emperor of Rome who wrote Stoic notes to himself he never meant anyone to read."],
+["sextus-empiricus","Sextus Empiricus",160,210,"Alexandria","sextus-empiricus","Catalogued the sceptical arsenal so thoroughly that his rediscovery destabilised the Renaissance."],
+["plotinus","Plotinus",204,270,"Egypt / Rome","plotinus","Read Plato as mysticism: everything emanates from the One and longs to return."],
+["porphyry","Porphyry",234,305,"Tyre / Rome","porphyry","Edited Plotinus, attacked Christianity, and wrote the logic primer medieval Europe learned from."],
+["hypatia","Hypatia of Alexandria",360,415,"Alexandria","neoplatonism","Mathematician and Neoplatonist head of school, murdered by a Christian mob."],
+["augustine","Augustine of Hippo",354,430,"Thagaste / Hippo","augustine","Converted Platonism to Christianity and invented the confessional interior self."],
+["boethius","Boethius",477,524,"Rome","boethius","Wrote the Consolation in a cell awaiting execution; taught Europe its logic for 600 years."],
+
+["laozi","Laozi",-601,-531,"Chu","laozi","Semi-legendary author of the Daodejing. The way that can be spoken is not the constant way."],
+["confucius","Confucius",-551,-479,"Lu","confucius","Made ethics a matter of ritual, role, and cultivated humaneness rather than divine command."],
+["buddha","Siddhartha Gautama",-563,-483,"Magadha","buddha","Diagnosed existence as suffering and prescribed a path out of it that requires no god."],
+["mahavira","Mahavira",-599,-527,"Vaishali","jaina-philosophy","Jain reformer: radical nonviolence and the many-sidedness of truth."],
+["mozi","Mozi",-470,-391,"Lu","mohism","Argued for impartial care and against Confucian ritual expense, with something like utilitarian reasoning."],
+["mencius","Mencius",-372,-289,"Zou","mencius","Held that human nature is innately good, like water running downhill."],
+["zhuangzi","Zhuangzi",-369,-286,"Meng","zhuangzi","Dreamt he was a butterfly. The wittiest sceptic in any tradition."],
+["xunzi","Xunzi",-310,-235,"Zhao","xunzi","Against Mencius: human nature is bad, and goodness is deliberate craft."],
+["han-feizi","Han Feizi",-280,-233,"Han","chinese-legalism","Xunzi's student who concluded that only law and power, not virtue, govern people."],
+["nagarjuna","Nagarjuna",150,250,"South India","nagarjuna","Founded Madhyamaka: all things are empty of intrinsic existence, including emptiness."],
+["vasubandhu","Vasubandhu",316,396,"Gandhara","vasubandhu","Yogacara systematiser; argued the world we meet is consciousness-only."],
+["bodhidharma","Bodhidharma",440,528,"India / China","buddhism-chan","Carried meditation practice to China; the founding legend of Chan and Zen."],
+["huineng","Huineng",638,713,"Tang China","buddhism-chan","Sixth Patriarch of Chan. Enlightenment is sudden, and the mirror was never there."],
+["shankara","Adi Shankara",788,820,"Kerala","shankara","Advaita Vedanta: only Brahman is real, the world is appearance, and you are not other than it."],
+["ramanuja","Ramanuja",1017,1137,"Tamil country","shankara","Answered Shankara with a qualified non-dualism that keeps God, soul, and love distinct."],
+["dogen","Dogen",1200,1253,"Japan","japanese-zen","Founder of Soto Zen. Practice is not a means to enlightenment; sitting is enlightenment."],
+["zhu-xi","Zhu Xi",1130,1200,"Song China","zhu-xi","Synthesised Neo-Confucianism into the orthodoxy China examined on for 700 years."],
+["wang-yangming","Wang Yangming",1472,1529,"Ming China","wang-yangming","Against Zhu Xi: knowledge and action are one, and the principle is in the mind."],
+
+["al-kindi","Al-Kindi",801,873,"Baghdad","al-kindi","The first philosopher of the Arabs; put Greek philosophy into Arabic thought."],
+["al-farabi","Al-Farabi",872,950,"Baghdad / Damascus","al-farabi","The Second Teacher, after Aristotle. Fused Plato's politics with Islamic prophecy."],
+["avicenna","Ibn Sina (Avicenna)",980,1037,"Bukhara / Hamadan","ibn-sina","Distinguished essence from existence and argued from contingency to a necessary being."],
+["al-ghazali","Al-Ghazali",1058,1111,"Tus / Baghdad","al-ghazali","Attacked the philosophers on causation, then walked away from his chair into Sufism."],
+["averroes","Ibn Rushd (Averroes)",1126,1198,"Cordoba","ibn-rushd","Defended philosophy against Al-Ghazali; his Aristotle commentaries reshaped Latin Europe."],
+["ibn-arabi","Ibn Arabi",1165,1240,"Murcia / Damascus","ibn-arabi","The Greatest Master of Sufi metaphysics: the unity of being."],
+["maimonides","Maimonides",1138,1204,"Cordoba / Cairo","maimonides","Reconciled Aristotle with Torah in the Guide, and denied God has any positive attributes."],
+["anselm","Anselm of Canterbury",1033,1109,"Aosta / Canterbury","anselm","Faith seeking understanding, and the ontological argument that will not stay dead."],
+["abelard","Peter Abelard",1079,1142,"Paris","abelard","Logician of universals, whose affair with Heloise cost him rather more than the argument."],
+["aquinas","Thomas Aquinas",1225,1274,"Naples / Paris","aquinas","Baptised Aristotle for Christianity in a system of unmatched architectural nerve."],
+["duns-scotus","John Duns Scotus",1266,1308,"Scotland / Paris","duns-scotus","The Subtle Doctor: univocity of being, haecceity, and the will over the intellect."],
+["ockham","William of Ockham",1287,1347,"England / Munich","ockham","Do not multiply entities beyond necessity. Nominalism with a razor."],
+["eckhart","Meister Eckhart",1260,1328,"Thuringia / Cologne","meister-eckhart","Preached a God beyond God and a ground of the soul, and was tried for it."],
+
+["machiavelli","Niccolo Machiavelli",1469,1527,"Florence","machiavelli","Separated politics from morality and has been resented for it ever since."],
+["erasmus","Erasmus",1466,1536,"Rotterdam / Basel","erasmus","Christian humanist who edited the Greek New Testament and defended free will against Luther."],
+["montaigne","Michel de Montaigne",1533,1592,"Bordeaux","montaigne","Invented the essay to find out what he thought. What do I know?"],
+["bacon","Francis Bacon",1561,1626,"London","francis-bacon","Proposed the experimental method as an instrument for commanding nature."],
+["hobbes","Thomas Hobbes",1588,1679,"England","hobbes","Without a sovereign, life is solitary, poor, nasty, brutish and short."],
+["descartes","Rene Descartes",1596,1650,"France / Netherlands","descartes","Doubted everything to find one certainty, and split mind from body doing it."],
+["pascal","Blaise Pascal",1623,1662,"Clermont / Paris","pascal","Mathematician who found reason's limits and wagered on God anyway."],
+["spinoza","Baruch Spinoza",1632,1677,"Amsterdam","spinoza","Excommunicated at 23 for identifying God with nature. Ground lenses, refused chairs, changed everything."],
+["locke","John Locke",1632,1704,"England","locke","The mind begins blank; government rests on consent; property comes from labour."],
+["leibniz","Gottfried Wilhelm Leibniz",1646,1716,"Leipzig / Hanover","leibniz","Monads, the best of all possible worlds, and calculus invented alongside Newton."],
+["malebranche","Nicolas Malebranche",1638,1715,"Paris","malebranche","Occasionalism: we see all things in God, and no creature truly causes anything."],
+["berkeley","George Berkeley",1685,1753,"Ireland","berkeley","To be is to be perceived. Matter is a superfluous hypothesis."],
+["vico","Giambattista Vico",1668,1744,"Naples","vico","We can know history because we made it, unlike nature, which God made."],
+["montesquieu","Montesquieu",1689,1755,"Bordeaux","montesquieu","Separation of powers, and climate as a variable in political science."],
+["voltaire","Voltaire",1694,1778,"Paris / Ferney","voltaire","The whip of the Enlightenment: deist, satirist, campaigner against judicial murder."],
+["hume","David Hume",1711,1776,"Edinburgh","hume","Dissolved causation, the self, and the move from is to ought, cheerfully."],
+["rousseau","Jean-Jacques Rousseau",1712,1778,"Geneva / Paris","rousseau","Man is born free and everywhere he is in chains. Civilisation as the fall."],
+["smith","Adam Smith",1723,1790,"Kirkcaldy / Glasgow","smith-moral-political","Moral philosopher first: sympathy in one book, the invisible hand in the other."],
+["kant","Immanuel Kant",1724,1804,"Konigsberg","kant","Woke from dogmatic slumber and rebuilt philosophy around the structure of the knowing mind."],
+["burke","Edmund Burke",1729,1797,"Dublin / London","burke","Founded conservatism by arguing that society is a contract with the dead and unborn."],
+["bentham","Jeremy Bentham",1748,1832,"London","bentham","The greatest happiness of the greatest number, calculated. His body still attends meetings."],
+["wollstonecraft","Mary Wollstonecraft",1759,1797,"London","wollstonecraft","Extended the rights of man to women and was buried under a century of slander for it."],
+["paine","Thomas Paine",1737,1809,"England / America","paine","Made revolution readable. Common Sense, then the Rights of Man, then prison."],
+
+["fichte","J. G. Fichte",1762,1814,"Prussia","johann-fichte","Took Kant's I and made it the ground of the whole world."],
+["hegel","G. W. F. Hegel",1770,1831,"Stuttgart / Berlin","hegel","History is spirit coming to know itself, dialectically, and painfully."],
+["schelling","F. W. J. Schelling",1775,1854,"Wurttemberg","schelling","Nature is visible spirit; spirit is invisible nature. Later, the philosophy of freedom."],
+["schopenhauer","Arthur Schopenhauer",1788,1860,"Danzig / Frankfurt","schopenhauer","The world is blind striving Will, and the only relief is art, compassion, or renunciation."],
+["stirner","Max Stirner",1806,1856,"Bayreuth / Berlin","max-stirner","Egoist who dissolved every cause, including humanity, into spooks in the head."],
+["kierkegaard","Soren Kierkegaard",1813,1855,"Copenhagen","kierkegaard","Truth is subjectivity; faith is a leap; the crowd is untruth."],
+["comte","Auguste Comte",1798,1857,"Montpellier / Paris","comte","Coined sociology and positivism, then founded a religion of humanity."],
+["mill","John Stuart Mill",1806,1873,"London","mill","Rebuilt utilitarianism around higher pleasures and made the case for liberty and for women."],
+["harriet-mill","Harriet Taylor Mill",1807,1858,"London","harriet-mill","Mill's collaborator and wife; her argument on the enfranchisement of women shaped his."],
+["marx","Karl Marx",1818,1883,"Trier / London","marx","Turned Hegel right side up: material conditions make consciousness, and history runs on class."],
+["engels","Friedrich Engels",1820,1895,"Barmen / London","marx","Marx's collaborator and financier; documented the English working class at first hand."],
+["emerson","Ralph Waldo Emerson",1803,1882,"Concord","emerson","Trust thyself. American Transcendentalism's founding voice."],
+["thoreau","Henry David Thoreau",1817,1862,"Concord","thoreau","Went to the woods to live deliberately, and refused his taxes on principle."],
+["nietzsche","Friedrich Nietzsche",1844,1900,"Rocken / Turin","nietzsche","God is dead, we killed him, and now we must become worthy of the deed."],
+["dostoevsky","Fyodor Dostoevsky",1821,1881,"Russia","existentialism","Novelist who staged the problem of freedom, guilt, and God more sharply than most philosophers."],
+["tolstoy","Leo Tolstoy",1828,1910,"Russia","tolstoy-leo","Renounced his art for a Christian anarchism of nonviolence that reached Gandhi."],
+["peirce","Charles Sanders Peirce",1839,1914,"Cambridge, Mass.","peirce","Founded pragmatism and semiotics, and died broke and unread."],
+["james","William James",1842,1910,"New York / Cambridge","james","Made pragmatism famous and psychology a discipline; the stream of consciousness is his."],
+["dewey","John Dewey",1859,1952,"Vermont / Chicago","dewey","Inquiry as the way organisms cope; democracy as a way of living, not a mechanism."],
+["frege","Gottlob Frege",1848,1925,"Wismar / Jena","frege","Invented modern logic almost alone, and with it analytic philosophy."],
+["bergson","Henri Bergson",1859,1941,"Paris","bergson","Lived duration is not clock time; intuition reaches what analysis cannot."],
+["dubois","W. E. B. Du Bois",1868,1963,"Massachusetts / Ghana","dubois","Double consciousness, the colour line, and sociology as a weapon."],
+["weber","Max Weber",1864,1920,"Erfurt / Munich","weber","Rationalisation, the iron cage, and the ethic of responsibility."],
+
+["husserl","Edmund Husserl",1859,1938,"Moravia / Freiburg","husserl","Founded phenomenology: back to the things themselves, by bracketing the world."],
+["russell","Bertrand Russell",1872,1970,"Wales / Cambridge","russell","Logic, atomism, pacifism, and a paradox that broke Frege's life work."],
+["whitehead","Alfred North Whitehead",1861,1947,"Kent / Harvard","whitehead","Co-wrote Principia Mathematica, then built a metaphysics of process."],
+["moore","G. E. Moore",1873,1958,"London / Cambridge","moore","Defended common sense and named the naturalistic fallacy."],
+["wittgenstein","Ludwig Wittgenstein",1889,1951,"Vienna / Cambridge","wittgenstein","Wrote two philosophies, the second demolishing the first. Meaning is use."],
+["heidegger","Martin Heidegger",1889,1976,"Messkirch / Freiburg","heidegger","Reopened the question of being; joined the Nazi party and never adequately accounted for it."],
+["jaspers","Karl Jaspers",1883,1969,"Oldenburg / Basel","jaspers","Limit situations, the Axial Age, and existential communication."],
+["arendt","Hannah Arendt",1906,1975,"Hanover / New York","arendt","Totalitarianism, natality, action, and the banality of evil."],
+["sartre","Jean-Paul Sartre",1905,1980,"Paris","sartre","Existence precedes essence; we are condemned to be free. Refused the Nobel."],
+["beauvoir","Simone de Beauvoir",1908,1986,"Paris","beauvoir","One is not born, but rather becomes, a woman. Founded modern feminist philosophy."],
+["camus","Albert Camus",1913,1960,"Algeria / Paris","camus","The absurd is the gap between our demand for meaning and the world's silence."],
+["merleau-ponty","Maurice Merleau-Ponty",1908,1961,"Rochefort / Paris","merleau-ponty","The body is not an object we have but the subject we are."],
+["levinas","Emmanuel Levinas",1906,1995,"Kaunas / Paris","levinas","Ethics is first philosophy, and it begins with the face of the other."],
+["weil","Simone Weil",1909,1943,"Paris","simone-weil","Attention as the rarest form of generosity; worked factory lines to know affliction."],
+["adorno","Theodor Adorno",1903,1969,"Frankfurt","adorno","Enlightenment turned into myth; the culture industry manufactures consent."],
+["horkheimer","Max Horkheimer",1895,1973,"Stuttgart / Frankfurt","horkheimer","Named critical theory and directed the Frankfurt School through exile."],
+["benjamin","Walter Benjamin",1892,1940,"Berlin / Portbou","benjamin","Aura, mechanical reproduction, and the angel of history. Died fleeing the Gestapo."],
+["marcuse","Herbert Marcuse",1898,1979,"Berlin / California","marcuse","One-dimensional society absorbs its own opposition. The New Left read him."],
+["habermas","Jurgen Habermas",1929,null,"Dusseldorf / Frankfurt","habermas","Communicative rationality: legitimacy comes from what could survive free discussion."],
+["gadamer","Hans-Georg Gadamer",1900,2002,"Marburg / Heidelberg","gadamer","Understanding is a fusion of horizons; prejudice is the condition of interpretation."],
+["popper","Karl Popper",1902,1994,"Vienna / London","popper","Science advances by falsification, and open societies by piecemeal reform."],
+["kuhn","Thomas Kuhn",1922,1996,"Cincinnati / MIT","thomas-kuhn","Science moves in paradigms and revolutions, not steady accumulation."],
+["carnap","Rudolf Carnap",1891,1970,"Wuppertal / Chicago","carnap","Vienna Circle architect of logical construction and the principle of tolerance."],
+["quine","W. V. O. Quine",1908,2000,"Ohio / Harvard","quine","Killed the analytic-synthetic distinction and made epistemology naturalised."],
+["ayer","A. J. Ayer",1910,1989,"London / Oxford","ayer","Imported logical positivism into English: if it cannot be verified, it is meaningless."],
+["godel","Kurt Godel",1906,1978,"Brno / Princeton","goedel","Proved that any consistent system rich enough for arithmetic leaves truths it cannot prove."],
+["ryle","Gilbert Ryle",1900,1976,"Brighton / Oxford","ryle","Called Descartes' mind the ghost in the machine and diagnosed a category mistake."],
+["austin","J. L. Austin",1911,1960,"Lancaster / Oxford","austin-jl","Some sentences do things rather than describe them: how to do things with words."],
+["anscombe","G. E. M. Anscombe",1919,2001,"Limerick / Cambridge","anscombe","Wittgenstein's translator; revived virtue ethics and founded the philosophy of action."],
+["davidson","Donald Davidson",1917,2003,"Springfield / Berkeley","davidson","Radical interpretation, anomalous monism, and truth-conditional meaning."],
+["rawls","John Rawls",1921,2002,"Baltimore / Harvard","rawls","Justice as fairness, chosen from behind a veil of ignorance."],
+["nozick","Robert Nozick",1938,2002,"Brooklyn / Harvard","nozick-political","Answered Rawls with a minimal state and rights as side constraints."],
+["berlin","Isaiah Berlin",1909,1997,"Riga / Oxford","berlin","Two concepts of liberty, and the tragic incommensurability of genuine values."],
+["foucault","Michel Foucault",1926,1984,"Poitiers / Paris","foucault","Power produces knowledge and subjects; madness, prisons, and sexuality have histories."],
+["derrida","Jacques Derrida",1930,2004,"Algeria / Paris","derrida","Deconstruction: every text undoes the oppositions it depends on."],
+["deleuze","Gilles Deleuze",1925,1995,"Paris","deleuze","Difference before identity; rhizomes instead of trees; philosophy as concept-creation."],
+["lacan","Jacques Lacan",1901,1981,"Paris","lacan","The unconscious is structured like a language; the mirror stage makes the I."],
+["levi-strauss","Claude Levi-Strauss",1908,2009,"Brussels / Paris","structuralism-social-science","Found the same binary machinery under every myth, and made structuralism a method."],
+["lyotard","Jean-Francois Lyotard",1924,1998,"Versailles / Paris","lyotard","Postmodern means incredulity toward metanarratives."],
+["baudrillard","Jean Baudrillard",1929,2007,"Reims / Paris","baudrillard","The map precedes the territory; the real is replaced by its simulation."],
+["butler","Judith Butler",1956,null,"Cleveland / Berkeley","butler-judith","Gender is performative: repeated acts that produce the identity they claim to express."],
+["fanon","Frantz Fanon",1925,1961,"Martinique / Algeria","frantz-fanon","Psychiatrist of colonialism; violence, recognition, and the wretched of the earth."],
+["rand","Ayn Rand",1905,1982,"St Petersburg / New York","ayn-rand","Objectivism: rational self-interest as a moral duty and capitalism as its politics."],
+["searle","John Searle",1932,null,"Denver / Berkeley","chinese-room","The Chinese Room: syntax is not sufficient for semantics."],
+["dennett","Daniel Dennett",1942,2024,"Boston / Tufts","consciousness","Consciousness as a set of user-illusions produced by competing processes."],
+["chalmers","David Chalmers",1966,null,"Sydney / NYU","consciousness","Named the hard problem: why is there something it is like to be us at all?"],
+["nagel","Thomas Nagel",1937,null,"Belgrade / NYU","consciousness","What is it like to be a bat? Objectivity has a blind spot shaped like experience."],
+["singer","Peter Singer",1946,null,"Melbourne / Princeton","singer","Interests count equally whoever has them, which indicts how we treat animals and the poor."],
+["nussbaum","Martha Nussbaum",1947,null,"New York / Chicago","aristotle-ethics","The capabilities approach, and the emotions as intelligent appraisals."],
+["chomsky","Noam Chomsky",1928,null,"Philadelphia / MIT","innateness-language","Language is innate structure; and power manufactures the consent it needs."],
+["gandhi","Mohandas K. Gandhi",1869,1948,"Gujarat / India","gandhi","Satyagraha: truth-force, a politics built on refusing to return harm."],
+["ambedkar","B. R. Ambedkar",1891,1956,"Mhow / Delhi","ambedkar","Drafted India's constitution and attacked caste at its religious root."],
+["krishnamurti","Jiddu Krishnamurti",1895,1986,"India / California","krishnamurti","Dissolved the order built for him: truth is a pathless land."],
+
+["copernicus","Nicolaus Copernicus",1473,1543,"Prussia / Poland","copernicus","Moved the earth. Everything downstream in philosophy had to be rewritten."],
+["galileo","Galileo Galilei",1564,1642,"Pisa / Florence","galileo","Made mathematics the language of nature and was tried for saying so."],
+["newton","Isaac Newton",1642,1727,"Woolsthorpe / Cambridge","newton-philosophy","Universal gravitation and absolute space; the model every philosopher after had to answer to."],
+["darwin","Charles Darwin",1809,1882,"Shrewsbury / Down","darwinism","Natural selection removed design from biology and teleology from nature."],
+["freud","Sigmund Freud",1856,1939,"Moravia / Vienna","psychoanalysis","The self is not master in its own house; the unconscious has reasons."],
+["einstein","Albert Einstein",1879,1955,"Ulm / Princeton","genrel-early","Relativity dissolved absolute space and time and forced philosophy to renegotiate causation."],
+["bohr","Niels Bohr",1885,1962,"Copenhagen","qm-copenhagen","Complementarity: the quantum world will not be described independently of the question asked."],
+["heisenberg","Werner Heisenberg",1901,1976,"Wurzburg / Munich","qt-uncertainty","Uncertainty is not ignorance but a limit written into nature."],
+["turing","Alan Turing",1912,1954,"London / Manchester","turing","Defined computation, then asked whether machines could think and how we would tell."],
+["hawking","Stephen Hawking",1942,2018,"Oxford / Cambridge","spacetime-singularities","Black hole thermodynamics and singularities; pressed cosmology into questions about origins."],
+];
