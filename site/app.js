@@ -474,8 +474,9 @@ function showTip(n, x, y) {
   else if (n.k === 'w') { const a = byId.get(n.by); sub = (a ? a.name || a.label : '') + (n.born != null ? ' · ' + yr(n.born) : ''); }
   else if (n.k === 'q') { const a = byId.get(n.by); sub = a ? a.label : ''; }
   else if (n.k === 'm') sub = span(n);
+  const gloss = n.blurb ? '<span class="tb">' + esc(trunc(n.blurb, 110)) + '</span>' : '';
   tip.innerHTML = '<span class="tk">' + k.name + (sub ? ' · ' + esc(sub) : '') + '</span>' +
-    (n.k === 'q' ? '<span class="tq">“' + esc(n.label) + '”</span>' : esc(n.label));
+    (n.k === 'q' ? '<span class="tq">“' + esc(n.label) + '”</span>' : '<b>' + esc(n.label) + '</b>') + gloss;
   tip.classList.add('on');
   const r = tip.getBoundingClientRect();
   let tx = x + 14, ty = y + 14;
@@ -536,6 +537,16 @@ function select(n) {
       (n.ref ? esc(n.ref) + '.' : '') + '</p>';
   }
   if (n.blurb) html += '<p class="blurb">' + esc(n.blurb) + '</p>';
+
+  // Stanford excerpt: the entry's own opening words, attributed
+  const sepNode = n.sepSum ? n : (n.k === 'w' || n.k === 'q') ? (byId.get(n.by) || {}) : n;
+  if (sepNode.sepSum) {
+    const who = sepNode === n ? '' :
+      '<span class="sep-note">On ' + esc(sepNode.label) + ' — </span>';
+    html += '<div class="sep-x">' + who + '<p>' + esc(sepNode.sepSum) + '</p>' +
+      '<div class="sep-cred">Stanford Encyclopedia of Philosophy' +
+      (sepNode.sepAuth ? ' · ' + esc(sepNode.sepAuth) : '') + '</div></div>';
+  }
 
   // group relations by type, direction-aware
   const groups = new Map();

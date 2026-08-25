@@ -12,8 +12,10 @@ DROP TABLE IF EXISTS edge_type;
 -- Authoritative slug index pulled from plato.stanford.edu/contents.html.
 -- Every sep reference in the data must resolve here or the build fails.
 CREATE TABLE sep_entry (
-  slug  TEXT PRIMARY KEY,
-  title TEXT NOT NULL
+  slug    TEXT PRIMARY KEY,
+  title   TEXT NOT NULL,
+  summary TEXT,               -- opening excerpt of the entry (fetch_sep_summaries.py)
+  authors TEXT                -- entry authorship, for attribution
 );
 
 CREATE TABLE person (

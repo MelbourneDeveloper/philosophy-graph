@@ -43,19 +43,22 @@ Hall, and the two most-quoted "Gandhi" lines he never wrote.
 SQLite is the source of truth. The site is a generated artefact.
 
 ```
-db/schema.sql       tables + the relation taxonomy
-db/source.json      curated content, hand-editable
-db/sep_index.tsv    authoritative SEP slugs
-db/philosophy.db    built store
+db/schema.sql          tables + the relation taxonomy
+db/source.json         curated content, hand-editable
+db/sep_index.tsv       authoritative SEP slugs
+db/sep_summaries.json  cached SEP entry excerpts (attributed in the UI)
+db/philosophy.db       built store
 ```
 
 Rebuild end to end:
 
 ```bash
-./scripts/fetch_sep_index.sh   # refresh SEP slugs (optional)
-python3 scripts/seed.py        # source.json -> philosophy.db, validates everything
-python3 scripts/build.py       # philosophy.db -> site/graph.js
+./scripts/rebuild.sh           # offline: source.json -> philosophy.db -> site/graph.js
+./scripts/rebuild.sh --fetch   # also refresh the SEP index + entry summaries first
 ```
+
+Or stage by stage: `fetch_sep_index.sh` (slug index), `fetch_sep_summaries.py`
+(polite, cached, resumable — only fetches what's missing), `seed.py`, `build.py`.
 
 `seed.py` enforces the sourcing rules: dangling endpoints, unknown edge types,
 domain/range mismatches and bad SEP slugs are hard failures, not warnings.

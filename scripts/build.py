@@ -10,13 +10,15 @@ con = sqlite3.connect(os.path.join(ROOT, 'db', 'philosophy.db'))
 con.row_factory = sqlite3.Row
 
 nodes, out = [], {}
-for r in con.execute('SELECT * FROM person ORDER BY born'):
+Q = 'SELECT t.*, s.summary AS sep_sum, s.authors AS sep_auth FROM %s t LEFT JOIN sep_entry s ON s.slug = t.sep ORDER BY %s'
+for r in con.execute(Q % ('person', 'born')):
     nodes.append({'id': r['id'], 'k': 'p', 'label': r['name'], 'born': r['born'],
                   'died': r['died'], 'region': r['region'], 'sep': r['sep'],
-                  'blurb': r['blurb']})
-for r in con.execute('SELECT * FROM school ORDER BY span_from'):
+                  'blurb': r['blurb'], 'sepSum': r['sep_sum'], 'sepAuth': r['sep_auth']})
+for r in con.execute(Q % ('school', 'span_from')):
     nodes.append({'id': r['id'], 'k': 'm', 'label': r['name'], 'born': r['span_from'],
-                  'died': r['span_to'], 'sep': r['sep'], 'blurb': r['blurb']})
+                  'died': r['span_to'], 'sep': r['sep'], 'blurb': r['blurb'],
+                  'sepSum': r['sep_sum'], 'sepAuth': r['sep_auth']})
 for r in con.execute('SELECT * FROM work ORDER BY year'):
     nodes.append({'id': r['id'], 'k': 'w', 'label': r['title'], 'born': r['year'],
                   'by': r['by'], 'blurb': r['blurb']})

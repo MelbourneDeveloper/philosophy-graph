@@ -43,7 +43,14 @@ def main():
 
     with open(os.path.join(ROOT, 'db', 'sep_index.tsv')) as f:
         sep = [tuple(l.rstrip('\n').split('\t')[:2]) for l in f if '\t' in l]
-    con.executemany('INSERT OR IGNORE INTO sep_entry VALUES (?,?)', sep)
+    # summaries are optional: the build works without them, richer with them
+    summaries = {}
+    spath = os.path.join(ROOT, 'db', 'sep_summaries.json')
+    if os.path.exists(spath):
+        summaries = json.load(open(spath))
+    con.executemany('INSERT OR IGNORE INTO sep_entry VALUES (?,?,?,?)',
+                    [(s, t, summaries.get(s, {}).get('text'),
+                      summaries.get(s, {}).get('authors')) for s, t in sep])
     slugs = {s for s, _ in sep}
 
     con.executemany('INSERT INTO edge_type VALUES (?,?,?,?,?,?,?)', EDGE_TYPES)
