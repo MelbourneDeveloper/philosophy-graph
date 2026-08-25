@@ -373,5 +373,130 @@
   "text": "[ Editor’s Note: The following new entry by Hsueh Qu and Elizabeth S. Radcliffe replaces the former entry on this topic by the previous authors. ] David Hume (1711–1776), a prominent intellectual of the Scottish Enlightenment, is renowned as the modern thinker who most rigorously applied the experimental method to traditional problems in philosophy.",
   "title": "David Hume",
   "authors": "Hsueh Qu"
+ },
+ "husserl": {
+  "text": "Edmund Husserl (1859–1938) is the founding father of phenomenology and a figure with a decisive impact on the development of twentieth century philosophy. He influenced not only thinkers like Martin Heidegger, Edith Stein, Maurice Merleau-Ponty and Jean-Paul Sartre, but also many other figures in European philosophy.",
+  "title": "Edmund Husserl",
+  "authors": "Dan Zahavi"
+ },
+ "ibn-arabi": {
+  "text": "Ibn ‘Arabī (1165–1240) can be considered the greatest of all Muslim philosophers, provided we understand philosophy in the broad, modern sense and not simply as the discipline of falsafa , whose outstanding representatives are Avicenna and, many would say, Mullā Sadrā.",
+  "title": "Ibn ‘Arabī",
+  "authors": "William Chittick"
+ },
+ "ibn-rushd": {
+  "text": "The Andalusian philosopher, physician and judge Ibn Rushd (1126–1198) is one of the great figures of philosophy within the Muslim contexts, and a foundational source for post-classical European thought.",
+  "title": "Ibn Rushd [Averroes]",
+  "authors": "Fouad Ben Ahmed"
+ },
+ "ibn-sina": {
+  "text": "Abū-ʿAlī al-Ḥusayn ibn-ʿAbdallāh Ibn-Sīnā [Avicenna] (ca. 970–1037) was the preeminent philosopher and physician of the Islamic world. [ 1 ] In his work he combined the disparate strands of philosophical/scientific [ 2 ] thinking in Greek late antiquity and early Islam into a rationally rigorous and self-consistent scientific system that encompassed and explained all reality, including the tenets of revealed…",
+  "title": "Ibn Sina [Avicenna]",
+  "authors": "Dimitri Gutas"
+ },
+ "innateness-language": {
+  "text": "[ Editor’s Note: The following new entry by Gabe Dupre replaces the former entry on this topic by the previous author. ] Questions about the role of experience in biological development, specifically cognitive development, are as old as philosophy (discussed by, e.g., Plato and Mencius).",
+  "title": "Innateness and Language",
+  "authors": "Gabe Dupre"
+ },
+ "jaina-philosophy": {
+  "text": "The Jains are those who consider that the teaching of the omniscient Jinas is the expression of the eternal essential nature of the universe. The only extant teaching is that of Mahāvīra (traditional dates 599–527/510 BCE, in Magadha, South of modern Bihar), the last Jina of the current cosmic period.",
+  "title": "Jaina Philosophy",
+  "authors": "Marie-Hélène Gorisse"
+ },
+ "james": {
+  "text": "William James was an original thinker in and between the disciplines of physiology, psychology and philosophy. His twelve-hundred page masterwork, The Principles of Psychology (1890), is a rich blend of physiology, psychology, philosophy, and personal reflection that has given us such ideas as “the stream of thought” and the baby’s impression of the world “as one great blooming, buzzing confusion” (PP 462).",
+  "title": "William James",
+  "authors": "Russell Goodman"
+ },
+ "japanese-zen": {
+  "text": "Zen, like the other forms of Buddhism, aims at the perfection or realization of personhood. To this end, sitting meditation called “ za-zen ” (坐禅) is a foundational method of prāxis across the various schools of this Buddha-Way—which is not an ideology, but a way of living.",
+  "title": "Japanese Zen Buddhist Philosophy",
+  "authors": "Shigenori Nagatomo"
+ },
+ "jaspers": {
+  "text": "Karl Jaspers (1883–1969) began his academic career working as a psychiatrist and, after a period of transition, he converted to philosophy in the early 1920s. Throughout the middle decades of the twentieth century he exercised considerable influence on a number of areas of philosophical inquiry: especially on epistemology, the philosophy of religion, and political theory.",
+  "title": "Karl Jaspers",
+  "authors": "Chris Thornhill Ronny Miron"
+ },
+ "johann-fichte": {
+  "text": "Inspired by his reading of Kant, Johann Gottlieb Fichte (1762–1814) developed during the final decade of the eighteenth century a radically revised and rigorously systematic version of transcendental idealism, which he called Wissenschaftslehre (“Doctrine of Scientific Knowledge”).",
+  "title": "Johann Gottlieb Fichte",
+  "authors": "Dan Breazeale"
+ },
+ "kant": {
+  "text": "Immanuel Kant (1724–1804) is the central figure in modern philosophy. He synthesized early modern rationalism and empiricism, set the terms for much of nineteenth and twentieth century philosophy, and continues to exercise a significant influence today in metaphysics, epistemology, ethics, political philosophy, aesthetics, and other fields.",
+  "title": "Immanuel Kant",
+  "authors": "Michael Rohlf"
+ },
+ "kierkegaard": {
+  "text": "Søren Aabye Kierkegaard (1813–1855) was an astonishingly prolific writer whose work—almost all of which was written in the 1840s—is difficult to categorize, spanning philosophy, theology, religious and devotional writing, literary criticism, psychology and social critique.",
+  "title": "Søren Kierkegaard",
+  "authors": "John Lippitt"
+ },
+ "lacan": {
+  "text": "Jacques Marie Émile Lacan (April 13, 1901 to September 9, 1981) was a celebrity thinker in Parisian intellectual life for much of the twentieth century. Sometimes referred to as “the French Freud,” he is a towering figure in the history of psychoanalysis.",
+  "title": "Jacques Lacan",
+  "authors": "Adrian Johnston"
+ },
+ "laozi": {
+  "text": "Daoism (also romanized as Taoism) generally names one of the three main currents of traditional Chinese thought, although it should be obvious that like any “ism,” it is an abstraction—what it names is not a uniform but multifaceted tradition with rich internal differences.",
+  "title": "Laozi",
+  "authors": "Alan Chan"
+ },
+ "leibniz": {
+  "text": "Gottfried Wilhelm Leibniz (1646–1716) was one of the great thinkers of the seventeenth and eighteenth centuries and is known as the last “universal genius”. He made deep and important contributions to the fields of metaphysics, epistemology, logic, philosophy of religion, as well as mathematics, physics, geology, jurisprudence, and history.",
+  "title": "Gottfried Wilhelm Leibniz",
+  "authors": "Brandon C. Look"
+ },
+ "levinas": {
+  "text": "Emmanuel Levinas’ (1905–1995) intellectual project was to develop a first philosophy. Whereas traditionally first philosophy denoted either metaphysics or theology, only to be reconceived by Heidegger as fundamental ontology, Levinas argued that it is ethics that should be so conceived. But, rather than formulating an ethical theory , Levinas developed his philosophy in opposition to both metaphysics and ontology.",
+  "title": "Emmanuel Levinas",
+  "authors": "Bettina Bergo"
+ },
+ "locke": {
+  "text": "John Locke (b. 1632, d. 1704) was a British philosopher, Oxford academic and medical researcher. Locke’s monumental An Essay Concerning Human Understanding (1689) is one of the first great defenses of modern empiricism and concerns itself with determining the limits of human understanding in respect to a wide spectrum of topics.",
+  "title": "John Locke",
+  "authors": "William Uzgalis"
+ },
+ "logical-empiricism": {
+  "text": "Logical empiricism is a philosophic movement rather than a set of doctrines, and it flourished in the 1920s and 30s in several centers in Europe and in the 40s and 50s in the United States. It had several different leaders whose views changed considerably over time. Moreover, these thinkers differed from one another, often sharply.",
+  "title": "Logical Empiricism",
+  "authors": "Richard Creath"
+ },
+ "lucretius": {
+  "text": "Titus Lucretius Carus (mid-90s to mid-50s BCE) was the author of a Latin, six-book didactic poem on Epicurean physics, the De rerum natura , henceforth DRN , usually translated The nature of things or On the nature of the universe . Largely by accident, the DRN is our fullest source for Epicurean, atomist physics.",
+  "title": "Lucretius",
+  "authors": "Simon Trépanier"
+ },
+ "lyotard": {
+  "text": "Jean-François Lyotard (1924–1998) was a French philosopher whose best known work—often to his chagrin—was his 1979 The Postmodern Condition . Written at the request of the Council of Universities of the Provincial Government of Quebec on the state of knowledge in the contemporary world, this work brought the term “postmodernism”, already in use in other fields, such as the arts and literature, to the forefront of…",
+  "title": "Jean François Lyotard",
+  "authors": "Peter Gratton"
+ },
+ "machiavelli": {
+  "text": "Why Machiavelli? That question might naturally and legitimately occur to anyone encountering an entry about him in an encyclopedia of philosophy. Certainly, Machiavelli contributed to a large number of important discourses in Western thought—political theory most notably, but also history and historiography, Italian literature, the principles of warfare, and diplomacy.",
+  "title": "Niccolò Machiavelli",
+  "authors": "Cary Nederman"
+ },
+ "maimonides": {
+  "text": "Moses ben Maimon [known to English speaking audiences as Maimonides and Hebrew speaking as Rambam] (1138–1204) is the greatest Jewish philosopher of the medieval period and is still widely read today. The Mishneh Torah , his 14-volume compendium of Jewish law, established him as the leading rabbinic authority of his time and quite possibly of all time.",
+  "title": "Maimonides",
+  "authors": "Kenneth Seeskin"
+ },
+ "malebranche": {
+  "text": "The French Cartesian Nicolas Malebranche was hailed by his contemporary, Pierre Bayle, as “the premier philosopher of our age.” Over the course of his philosophical career, Malebranche published major works on metaphysics, theology, and ethics, as well as studies of optics, the laws of motion and the nature of color.",
+  "title": "Nicolas Malebranche",
+  "authors": "Tad Schmaltz"
+ },
+ "marcus-aurelius": {
+  "text": "The second century CE Roman emperor Marcus Aurelius was also a Stoic philosopher, and his Meditations , written to and for himself, offers readers a unique opportunity to see how an ancient person (indeed an emperor) might try to live a Stoic life, according to which only virtue is good, only vice is bad, and the things about which we normally concern ourselves are all indifferent to our happiness, as our lives are…",
+  "title": "Marcus Aurelius",
+  "authors": "Rachana Kamtekar"
+ },
+ "marcuse": {
+  "text": "Herbert Marcuse (1898–1979) was one of the most prominent members of the Frankfurt School or The Institute for Social Research (Institute für Sozialforschung) in Frankfurt am Main. The Frankfurt School was formed in 1922 but went into exile in the United States in the early 1930s during the reign of the Third Reich.",
+  "title": "Herbert Marcuse",
+  "authors": "Arnold Farr"
  }
 }
