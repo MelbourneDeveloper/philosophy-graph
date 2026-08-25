@@ -1,0 +1,77 @@
+name: Build & deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Rebuild the database and payload from the committed inputs. seed.py
+      # validates every SEP slug, foreign key, and edge domain/range - a bad
+      # row fails the build here, not in someone's browser.
+      - name: Rebuild from source
+        run: ./scripts/rebuild.sh
+
+      # site/graph.js is generated. If the rebuild changes it, someone edited
+      # the artefact by hand or forgot to rebuild after editing source.json.
+      - name: Generated payload matches source
+        run: |
+          if ! git diff --exit-code --stat -- site/graph.js; then
+            echo "::error::site/graph.js is out of date. Run ./scripts/rebuild.sh and commit."
+            exit 1
+          fi
+
+      - name: Smoke-test the page
+        run: |
+          node --check site/app.js
+          python3 - <<'PY'
+          import json, re
+          g = open('site/graph.js').read()
+          d = json.loads(re.search(r'window\.GRAPH = (.*);', g).group(1))
+          assert len(d['nodes']) > 400, 'node count collapsed'
+          assert len(d['edges']) > 900, 'edge count collapsed'
+          ids = {n['id'] for n in d['nodes']}
+          for a, b, t in d['edges']:
+              assert a in ids and b in ids, f'dangling edge {a}->{b}'
+          print(f"ok: {len(d['nodes'])} nodes, {len(d['edges'])} edges")
+          PY
+
+      - name: Stage site
+        run: |
+          mkdir -p _site/site
+          cp index.html _site/
+          cp site/app.js site/graph.js _site/site/
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
