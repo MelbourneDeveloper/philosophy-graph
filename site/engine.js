@@ -100,6 +100,36 @@ function visible(n) { return S.show[n.k] && !n.hidden && (n.g || 0) <= S.gate; }
 function linkVisible(l) { return (l.g || 0) <= S.gate && visible(l.s) && visible(l.d); }
 function kick(a) { S.alpha = Math.max(S.alpha, a); }
 
+/* ---------- the horizon ----------
+   The gate hides nodes, but a node it lets through can still carry a date from
+   a part of the story the reader has not reached: an end date is a claim about
+   the future. `gate.horizon[level]` is the last moment that level is allowed to
+   know about, and past it a node reads as open-ended rather than naming the day
+   it finishes. A config without a horizon is left exactly as it was. */
+const HORIZON = (C.gate && C.gate.horizon) || null;
+function horizon() {
+  const h = HORIZON ? HORIZON[S.gate] : null;
+  return (typeof h === 'number') ? h : null;
+}
+function applyHorizon() {
+  const h = horizon();
+  for (const n of nodes) {
+    if (n.t1raw === undefined) n.t1raw = (n.t1 === undefined ? null : n.t1);
+    n.t1 = (h == null || n.t1raw == null || n.t1raw <= h) ? n.t1raw : null;
+  }
+}
+/* The span the reader is allowed to be shown, for culling the axis. */
+function gateSpan() {
+  const h = horizon();
+  if (h == null) return null;
+  let lo = Infinity;
+  for (const n of nodes)
+    if ((n.g || 0) <= S.gate && typeof n.t0 === 'number') lo = Math.min(lo, n.t0);
+  if (!isFinite(lo)) return null;
+  const pad = Math.max((h - lo) * 0.02, 1e-9);
+  return [lo - pad, h + pad];
+}
+
 /* ---------- the timeline scale ----------
    config gives stops [[value, x], …]; between them the scale is linear, so a
    dense stretch of story time can be given as much axis as it deserves. */
@@ -604,8 +634,12 @@ function drawAxis() {
   ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   ctx.font = '10px ' + (C.fontMono || 'monospace');
   ctx.strokeStyle = PAL.line; ctx.fillStyle = PAL.ink3; ctx.lineWidth = 1;
+  const span = gateSpan();
   for (const m of (T.marks || [])) {
     const v = Array.isArray(m) ? m[0] : m;
+    // A mark outside the span dates a stretch of the story the gate is holding
+    // back — an empty axis still says when the rest of it happens.
+    if (span && (v < span[0] || v > span[1])) continue;
     const text = Array.isArray(m) ? m[1] : (T.label ? T.label(v) : String(v));
     const sx = (timeX(v) - S.cam.x) * S.cam.z + W / 2;
     if (sx < 30 || sx > W - 30) continue;
@@ -739,7 +773,15 @@ function zoomAt(sx, sy, f) {
 /* ---------- formatting helpers exposed to config ---------- */
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 function trunc(s, n) { return s.length > n ? s.slice(0, n - 1).trim() + '…' : s; }
-const H_ = { esc, trunc, byId, get: id => byId.get(id), adj: id => adj.get(id) || [] };
+/* `get` is what a config reaches a neighbour by name through — a line's
+   speaker, a work's author. It answers only for what the gate allows, so a
+   dossier cannot name someone the reader has not been let near: the line stays,
+   unattributed, until they have met whoever said it. Chip filters are a view,
+   not knowledge, so they do not close this. */
+const H_ = { esc, trunc, byId,
+             get: id => { const n = byId.get(id);
+                          return (n && (n.g || 0) <= S.gate) ? n : undefined; },
+             adj: id => adj.get(id) || [] };
 C.h = H_;
 function sub(n) { return (C.sub && C.sub(n, H_)) || ''; }
 
@@ -1129,7 +1171,9 @@ function hiddenCount() {
 }
 function setGate(g) {
   S.gate = g;
+  applyHorizon();
   if (S.sel && !visible(S.sel)) select(null);
+  else if (S.sel) select(S.sel);   // redraw: its dates and relations just moved
   if (S.focus && !visible(S.focus)) { S.focus = null; S.focusSet = null; }
   S.tracePath = null;
   refreshCounts();
@@ -1159,6 +1203,7 @@ window.ENGINE = {
 };
 
 /* ---------- go ---------- */
+applyHorizon();
 resize();
 for (let i = 0; i < 600; i++) { S.alpha = 1; tick(); }
 S.alpha = 0.6;
