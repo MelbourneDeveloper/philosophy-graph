@@ -2,3 +2,5 @@
 .too_many_cooks/
 .playwright-mcp/
 /*.png
+__pycache__/
+*.pyc

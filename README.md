@@ -43,12 +43,15 @@ Hall, and the two most-quoted "Gandhi" lines he never wrote.
 SQLite is the source of truth. The site is a generated artefact.
 
 ```
-db/schema.sql          tables + the relation taxonomy
-db/source.json         curated content, hand-editable
+db/source.json         curated content, hand-editable — kinds, taxonomy, rows
 db/sep_index.tsv       authoritative SEP slugs
 db/sep_summaries.json  cached SEP entry excerpts (attributed in the UI)
 db/philosophy.db       built store
 ```
+
+The schema is no longer a file here: `graphkit` builds one generic `node` /
+`edge` / `edge_type` store from the `meta` block at the top of `source.json`,
+which is where the node kinds and the relation taxonomy now live.
 
 Rebuild end to end:
 
@@ -85,11 +88,34 @@ sqlite3 db/philosophy.db "SELECT p.name, count(*) c FROM edge e
 ## Files
 
 ```
-index.html      shell, styles, markup
-site/app.js     force simulation, canvas renderer, interaction
+index.html      shell, the design tokens, markup
+site/config.js  this world: kinds, relation rest lengths, timeline, formatting
+site/engine.js  VENDORED from graph-engine — do not edit here
+site/engine.css VENDORED from graph-engine — do not edit here
 site/graph.js   GENERATED payload — do not edit
 db/, scripts/   the database and its build pipeline
 SPEC.md         data model, relation taxonomy, sourcing rules
+```
+
+## Shared code
+
+The force simulation, the canvas renderer, the detail panel and the build
+pipeline are **shared with the Twin Peaks atlas** and live in their own repo:
+
+```
+graph-engine/
+  engine/engine.js     force layout, canvas renderer, interaction, panel
+  engine/engine.css    structural CSS; every colour comes from a token
+  graphkit/graphkit.py source.json -> sqlite -> graph.js, with the validation
+  sync.sh              vendor it into a site
+```
+
+The engine is domain-neutral: it knows about *kinds*, *relations*, *anchors*
+and a *timeline scale*, and nothing about Presocratics. Everything specific to
+philosophy is in [site/config.js](site/config.js) and `db/source.json`.
+
+```bash
+cd ../graph-engine && ./sync.sh ../philosophy ../twinpeaks
 ```
 
 No dependencies, no build step for the page itself, no server required.

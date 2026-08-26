@@ -41,7 +41,8 @@ jobs:
 
       - name: Smoke-test the page
         run: |
-          node --check site/app.js
+          node --check site/engine.js
+          node --check site/config.js
           python3 - <<'PY'
           import json, re
           g = open('site/graph.js').read()
@@ -49,16 +50,18 @@ jobs:
           assert len(d['nodes']) > 400, 'node count collapsed'
           assert len(d['edges']) > 900, 'edge count collapsed'
           ids = {n['id'] for n in d['nodes']}
-          for a, b, t in d['edges']:
-              assert a in ids and b in ids, f'dangling edge {a}->{b}'
-          print(f"ok: {len(d['nodes'])} nodes, {len(d['edges'])} edges")
+          for e in d['edges']:
+              assert e[0] in ids and e[1] in ids, f'dangling edge {e}'
+          sep = sum(1 for n in d['nodes'] if n.get('src'))
+          assert sep > 200, f'SEP coverage collapsed to {sep}'
+          print(f"ok: {len(d['nodes'])} nodes, {len(d['edges'])} edges, {sep} sourced")
           PY
 
       - name: Stage site
         run: |
           mkdir -p _site/site
           cp index.html _site/
-          cp site/app.js site/graph.js _site/site/
+          cp site/*.js site/*.css _site/site/
           touch _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
