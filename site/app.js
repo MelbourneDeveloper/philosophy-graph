@@ -406,16 +406,46 @@ function nodeAt(sx, sy) {
   return best;
 }
 
-/* ---------- pointer ---------- */
+/* ---------- pointer (mouse + multi-touch) ---------- */
 let pointer = { down: false, moved: false, sx: 0, sy: 0, node: null, lastT: 0 };
+const pts = new Map();          // live pointers, for pinch
+let pinch = null;               // {x,y,d} of the two-finger midpoint
+let lastTap = { t: 0, node: null };
+
+function pinchState() {
+  const a = [...pts.values()];
+  return { x: (a[0].x + a[1].x) / 2, y: (a[0].y + a[1].y) / 2,
+           d: Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) };
+}
+
 cv.addEventListener('pointerdown', e => {
   cv.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (pts.size === 2) {                    // second finger down: pinch, not tap/drag
+    if (S.drag) S.drag = null;
+    pointer.down = false; pointer.node = null; pointer.moved = true;
+    hideTip();
+    pinch = pinchState();
+    return;
+  }
+  if (pts.size > 2) return;
   const n = nodeAt(e.offsetX, e.offsetY);
   pointer = { down: true, moved: false, sx: e.offsetX, sy: e.offsetY, node: n, lastT: Date.now() };
   if (n) { n.pinned = true; S.drag = n; }
   cv.classList.add('grabbing');
+  if (e.pointerType === 'touch') hideTip();
 });
+
 cv.addEventListener('pointermove', e => {
+  if (pts.has(e.pointerId)) pts.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (pinch && pts.size >= 2) {            // pinch to zoom + two-finger pan
+    const m = pinchState();
+    if (pinch.d > 8 && m.d > 8) zoomAt(m.x, m.y, m.d / pinch.d);
+    S.cam.x -= (m.x - pinch.x) / S.cam.z;
+    S.cam.y -= (m.y - pinch.y) / S.cam.z;
+    pinch = m;
+    return;
+  }
   if (pointer.down) {
     const dx = e.offsetX - pointer.sx, dy = e.offsetY - pointer.sy;
     if (Math.abs(dx) + Math.abs(dy) > 3) pointer.moved = true;
@@ -429,24 +459,40 @@ cv.addEventListener('pointermove', e => {
     }
     return;
   }
+  if (e.pointerType === 'touch') return;   // no hover state on touch
   const n = nodeAt(e.offsetX, e.offsetY);
   if (n !== S.hover) { S.hover = n; cv.classList.toggle('pointing', !!n); }
   showTip(n, e.offsetX, e.offsetY);
 });
-cv.addEventListener('pointerup', e => {
+
+function endPointer(e) {
+  pts.delete(e.pointerId);
+  if (pts.size < 2) pinch = null;
+  if (pts.size > 0) { pointer.down = false; return; }
   cv.classList.remove('grabbing');
-  const wasDrag = pointer.moved;
-  const n = pointer.node;
+  const wasDrag = pointer.moved, wasDown = pointer.down, n = pointer.node;
   if (S.drag) S.drag = null;
   pointer.down = false;
-  if (!wasDrag) {
-    if (n) {
-      if (S.trace) { pickTrace(n); }
-      else select(n);
-    } else if (!S.trace) { select(null); }
+  if (e.pointerType === 'touch') { S.hover = null; hideTip(); }
+  if (!wasDown || wasDrag) return;
+  if (e.pointerType === 'touch' && n && !S.trace) {   // double-tap = isolate
+    const now = Date.now();
+    if (lastTap.node === n && now - lastTap.t < 340) {
+      lastTap = { t: 0, node: null };
+      setFocus(S.focus === n ? null : n);
+      return;
+    }
+    lastTap = { t: now, node: n };
   }
+  if (n) { if (S.trace) pickTrace(n); else select(n); }
+  else if (!S.trace) select(null);
+}
+cv.addEventListener('pointerup', endPointer);
+cv.addEventListener('pointercancel', endPointer);
+cv.addEventListener('pointerleave', e => {
+  if (e.pointerType === 'touch') return;
+  S.hover = null; hideTip();
 });
-cv.addEventListener('pointerleave', () => { S.hover = null; hideTip(); });
 cv.addEventListener('dblclick', e => {
   const n = nodeAt(e.offsetX, e.offsetY);
   if (n) { setFocus(S.focus === n ? null : n); }
